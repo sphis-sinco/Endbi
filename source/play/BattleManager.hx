@@ -115,7 +115,7 @@ class BattleManager
 
 	public function handleDefenceEnergy()
 	{
-		if (flixel.FlxG.random.bool(flixel.FlxG.random.int(25, 50)))
+		if (FlxG.random.bool(FlxG.random.int(25, 50)))
 		{
 			PLAYER.ENERGY++;
 			if (PLAYER.ENERGY > PLAYER.MAX_ENERGY)
@@ -155,7 +155,7 @@ class BattleManager
 					if (pattern.endsWith(DEF_MOVE))
 						OPPONENT_NEXT_MOVE = DEF_MOVE;
 				}
-				if (flixel.FlxG.random.bool(flixel.FlxG.random.float(0, 4) * 25))
+				if (FlxG.random.bool(FlxG.random.float(0, 4) * 25))
 				{
 					break;
 				}
