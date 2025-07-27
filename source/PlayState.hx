@@ -31,8 +31,8 @@ class PlayState extends FlxState
 	public var PLAYER_MAXENERGY:Int = 5;
 	public var PLAYER_ENERGY:Int = 5;
 
-	public var PLAYER_MAXHEALTH:Int = 1;
-	public var PLAYER_HEALTH:Int = 1;
+	public var PLAYER_MAXHEALTH:Int = 5;
+	public var PLAYER_HEALTH:Int = 5;
 
 	public var PLAYER_LEVEL:Int = 1;
 
@@ -180,25 +180,18 @@ class PlayState extends FlxState
 			{
 				// sfx goes here
 				FlxFlicker.stopFlickering(OPPONENT);
-				FlxFlicker.flicker(OPPONENT, 1, 0.05);
+				FlxFlicker.flicker(OPPONENT, 1, 0.05, true, true, flicker ->
+				{
+					if (OPPONENT_HEALTH <= 0)
+						deadEnemy();
+				});
 			}
 		}
 		PLAYER_ENERGY -= 1;
 
 		if (OPPONENT_HEALTH < 0)
 		{
-			final energyIncrease = 5 * Std.int(PLAYER_ENERGY / PLAYER_MAXENERGY);
-
-			PLAYER_LEVEL++;
-			PLAYER_MAXENERGY += energyIncrease;
-
-			if (PLAYER_LEVEL > 20 || energyIncrease == 0)
-			{
-				PLAYER_LEVEL--;
-				PLAYER_MAXENERGY -= energyIncrease;
-			}
-
-			FlxG.switchState(() -> new PlayState(PLAYER_CHARACTER_NAME, OPPONENT_CHARACTER_NAME));
+			deadEnemy();
 		}
 		if (PLAYER_ENERGY < 0)
 		{
@@ -209,6 +202,24 @@ class PlayState extends FlxState
 		{
 			opMove();
 		}
+	}
+
+	public function deadEnemy()
+	{
+		final energyIncrease = 5 * Std.int(PLAYER_ENERGY / PLAYER_MAXENERGY);
+
+		PLAYER_LEVEL++;
+		PLAYER_HEALTH += energyIncrease;
+		PLAYER_MAXENERGY += energyIncrease;
+
+		if (PLAYER_LEVEL > 20 || energyIncrease == 0)
+		{
+			PLAYER_LEVEL--;
+			PLAYER_HEALTH -= energyIncrease;
+			PLAYER_MAXENERGY -= energyIncrease;
+		}
+
+		FlxG.switchState(() -> new PlayState(PLAYER_CHARACTER_NAME, OPPONENT_CHARACTER_NAME));
 	}
 
 	public function defence()
