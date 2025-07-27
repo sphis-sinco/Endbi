@@ -22,8 +22,8 @@ class PlayState extends FlxState
 	public var PLAYER_ATK_MOVE:String = 'a';
 	public var PLAYER_DEF_MOVE:String = 'd';
 
-	public var PLAYER_MAXENERGY:Int = 1;
-	public var PLAYER_ENERGY:Int = 1;
+	public var PLAYER_MAXENERGY:Int = 5;
+	public var PLAYER_ENERGY:Int = 5;
 
 	public var PLAYER_MAXHEALTH:Int = 1;
 	public var PLAYER_HEALTH:Int = 1;
@@ -34,8 +34,8 @@ class PlayState extends FlxState
 
 	public var OPPONENT:CharacterSprite;
 
-	public var OPPONENT_MAXENERGY:Int = 1;
-	public var OPPONENT_ENERGY:Int = 1;
+	public var OPPONENT_MAXENERGY:Int = 5;
+	public var OPPONENT_ENERGY:Int = 5;
 
 	public var OPPONENT_MAXHEALTH:Int = 5;
 	public var OPPONENT_HEALTH:Int = 5;
@@ -146,6 +146,11 @@ class PlayState extends FlxState
 
 		if (OPPONENT_HEALTH < 0)
 		{
+			PLAYER_LEVEL += 1;
+			PLAYER_MAXENERGY += 5;
+
+			if (PLAYER_LEVEL > 20)
+				PLAYER_MAXENERGY -= 5;
 			// swap op
 		}
 		if (PLAYER_ENERGY < 0)
