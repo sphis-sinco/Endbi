@@ -205,7 +205,7 @@ class PlayState extends FlxState
 
 		if (FlxG.random.bool(FlxG.random.int(0, 100)) || defence)
 		{
-			opponentAttack();
+			opMove();
 		}
 	}
 
@@ -228,11 +228,21 @@ class PlayState extends FlxState
 
 		if (FlxG.random.bool(FlxG.random.int(0, 100)) || checkMovePatterns())
 		{
-			opponentAttack();
+			opMove();
 		}
 	}
 
-	public function opponentAttack() {}
+	public function opMove()
+	{
+		trace('------op-move------');
+		var attack = false;
+
+		attack = FlxG.random.bool(FlxG.random.int(0, 100)) ? true : attack;
+		attack = PLAYER_HEALTH == 1 ? true : attack;
+
+		trace('Opponent attacking: $attack');
+		trace('----op-move-end----');
+	}
 
 	public function checkMovePatterns():Bool
 	{
