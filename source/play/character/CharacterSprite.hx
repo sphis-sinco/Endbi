@@ -4,7 +4,7 @@ import flixel.graphics.FlxGraphic;
 
 class CharacterSprite extends FlxSprite
 {
-	public var graphics:Map<String, FlxGraphic> = [];
+	public var graphics:Map<String, String> = [];
 	public var data:CharacterData = null;
 	public var HP:Int = 0;
 	public var MAX_HP:Int = 0;
@@ -40,20 +40,26 @@ class CharacterSprite extends FlxSprite
 		final prefix:String = 'assets/images/characters/';
 		final suffix:String = '.png';
 
-		graphics.set('idle', FlxGraphic.fromAssetKey('${prefix}${data.assetFolder}/${data.assetNames?.idle ?? 'idle'}${suffix}'));
-		graphics.set('defence', FlxGraphic.fromAssetKey('${prefix}${data.assetFolder}/${data.assetNames?.defence ?? 'defence'}${suffix}'));
-		graphics.set('death', FlxGraphic.fromAssetKey('${prefix}${data.assetFolder}/${data.assetNames?.death ?? 'death'}${suffix}'));
+		graphics.set('idle', '${prefix}${data.assetFolder}/${data.assetNames?.idle ?? 'idle'}${suffix}');
+		graphics.set('defence', '${prefix}${data.assetFolder}/${data.assetNames?.defence ?? 'defence'}${suffix}');
+		graphics.set('death', '${prefix}${data.assetFolder}/${data.assetNames?.death ?? 'death'}${suffix}');
 
-		graphics.set('atk1', FlxGraphic.fromAssetKey('${prefix}${data.assetFolder}/${data.assetNames?.atk1 ?? 'atk1'}${suffix}'));
-		graphics.set('atk2', FlxGraphic.fromAssetKey('${prefix}${data.assetFolder}/${data.assetNames?.atk2 ?? 'atk2'}${suffix}'));
-		graphics.set('atk3', FlxGraphic.fromAssetKey('${prefix}${data.assetFolder}/${data.assetNames?.atk3 ?? 'atk3'}${suffix}'));
+		graphics.set('atk1', '${prefix}${data.assetFolder}/${data.assetNames?.atk1 ?? 'atk1'}${suffix}');
+		graphics.set('atk2', '${prefix}${data.assetFolder}/${data.assetNames?.atk2 ?? 'atk2'}${suffix}');
+		graphics.set('atk3', '${prefix}${data.assetFolder}/${data.assetNames?.atk3 ?? 'atk3'}${suffix}');
 
 		playAnimation('idle');
 	}
 
 	public function loadAsset(key:String)
 	{
-		loadGraphic(graphics.get(key));
+		var path = graphics.get(key);
+		if (path == null)
+		{
+			trace('Warning: Graphic path for key "$key" not found in graphics map.');
+			return;
+		}
+		loadGraphic(path);
 		scale.set(4, 4);
 	}
 
