@@ -1,7 +1,6 @@
 package play;
 
 import flixel.FlxState;
-import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
