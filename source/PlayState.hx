@@ -11,12 +11,16 @@ class PlayState extends FlxState
 {
 	public var TEMPCHAR:CharacterSprite;
 
-	public var ATTACK_SELECT:Bool = true;
+	public var ATTACK_SELECT:Bool = false;
 	public var ATTACK_SELECT_BUTTON:FlxButton;
 
 	public var ATTACK_BUTTONS:FlxTypedGroup<FlxButton>;
 
 	public var PLAYER:CharacterSprite;
+
+	public var PLAYER_LAST_MOVES:String = '';
+	public var PLAYER_ATK_MOVE:String = 'a';
+	public var PLAYER_DEF_MOVE:String = 'd';
 
 	public var PLAYER_MAXENERGY:Int = 1;
 	public var PLAYER_ENERGY:Int = 1;
@@ -33,8 +37,8 @@ class PlayState extends FlxState
 	public var OPPONENT_MAXENERGY:Int = 1;
 	public var OPPONENT_ENERGY:Int = 1;
 
-	public var OPPONENT_MAXHEALTH:Int = 1;
-	public var OPPONENT_HEALTH:Int = 1;
+	public var OPPONENT_MAXHEALTH:Int = 5;
+	public var OPPONENT_HEALTH:Int = 5;
 
 	public var OPPONENT_LEVEL:Int = 1;
 
@@ -117,9 +121,22 @@ class PlayState extends FlxState
 	{
 		ATTACK_SELECT = false;
 
-		final defence = FlxG.random.int(0, 4) >= 3;
+		var defence = false;
+		var def_reason:String = '';
+
+		final spammingAttack:Bool = PLAYER_LAST_MOVES.split(PLAYER_DEF_MOVE)[0].length >= 4;
+		if (spammingAttack)
+			def_reason = 'player has been predicted';
+		else if (FlxG.random.int(0, 4) >= 3)
+			def_reason = 'random chance';
+
+		defence = def_reason != '';
+		if (defence)
+			trace('Opponent defended: $def_reason');
 
 		OPPONENT_HEALTH -= Std.int(val / ((defence) ? 2 : 1));
+
+		PLAYER_LAST_MOVES += PLAYER_ATK_MOVE;
 	}
 
 	override public function update(elapsed:Float)
