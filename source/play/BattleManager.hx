@@ -4,15 +4,30 @@ import flixel.effects.FlxFlicker;
 import play.character.CharacterSprite;
 import play.op_ai.MovePatternGenerator;
 
+/**
+ * Manages battle logic between player and opponent.
+ * Handles attacks, defence, and move pattern prediction.
+ */
 class BattleManager
 {
+	/** Player and opponent character references. */
 	public var PLAYER:CharacterSprite;
+
 	public var OPPONENT:CharacterSprite;
 	public var ATK_MOVE:String;
 	public var DEF_MOVE:String;
 	public var PLAYER_LAST_MOVES:String;
 	public var OPPONENT_NEXT_MOVE:String;
 
+	/**
+	 * Constructor for BattleManager.
+	 * @param PLAYER Player character
+	 * @param OPPONENT Opponent character
+	 * @param ATK_MOVE Attack move key
+	 * @param DEF_MOVE Defence move key
+	 * @param PLAYER_LAST_MOVES Player's move history
+	 * @param OPPONENT_NEXT_MOVE Opponent's next move
+	 */
 	public function new(PLAYER:CharacterSprite, OPPONENT:CharacterSprite, ATK_MOVE:String, DEF_MOVE:String, PLAYER_LAST_MOVES:String, OPPONENT_NEXT_MOVE:String)
 	{
 		this.PLAYER = PLAYER;
@@ -23,11 +38,17 @@ class BattleManager
 		this.OPPONENT_NEXT_MOVE = OPPONENT_NEXT_MOVE;
 	}
 
+	/**
+	 * Applies an attack to the opponent, handling flicker and death.
+	 * @param attack Attack data
+	 * @param defence Whether opponent is defending
+	 * @param onDeath Callback if opponent dies
+	 */
 	public function applyAttackToOpponent(attack:Dynamic, defence:Bool, onDeath:Void->Void)
 	{
 		final energyDiv = (PLAYER.ENERGY / PLAYER.MAX_ENERGY);
 		final prevOH = OPPONENT.HP;
-		OPPONENT.HP -= (attack.baseDamage * energyDiv / ((defence) ? 2 : 1));
+		OPPONENT.HP -= (attack.baseDamage * energyDiv / (defence ? 2 : 1));
 		if (prevOH != OPPONENT.HP)
 		{
 			FlxFlicker.stopFlickering(OPPONENT);
@@ -47,13 +68,19 @@ class BattleManager
 		}
 	}
 
+	/**
+	 * Applies an attack to the player, handling flicker and death.
+	 * @param attack Attack data
+	 * @param playerDefend Whether player is defending
+	 * @param onDeath Callback if player dies
+	 */
 	public function applyAttackToPlayer(attack:Dynamic, playerDefend:Bool, onDeath:Void->Void)
 	{
 		var val = attack.baseDamage;
 		final energyDiv = (OPPONENT.ENERGY / OPPONENT.MAX_ENERGY);
 		final prevPH = PLAYER.HP;
 		PLAYER.playAnimation('defence', 0.25);
-		PLAYER.HP -= (val / ((playerDefend) ? (2 * energyDiv) : (1 * energyDiv)));
+		PLAYER.HP -= (val / (playerDefend ? (2 * energyDiv) : (1 * energyDiv)));
 		if (prevPH != PLAYER.HP)
 		{
 			FlxFlicker.stopFlickering(PLAYER);
@@ -71,22 +98,22 @@ class BattleManager
 			});
 		}
 		OPPONENT.playAnimation('atk${attack.id}', 0.25);
-		OPPONENT.ENERGY -= 1;
+		OPPONENT.ENERGY = Math.max(0, OPPONENT.ENERGY - 1);
 		if (PLAYER.HP < 0)
 		{
 			PLAYER.playAnimation('death', 0.8);
 			onDeath();
 		}
-		if (OPPONENT.ENERGY < 0)
-		{
-			OPPONENT.ENERGY = 0;
-		}
 	}
 
+	/**
+	 * Selects the best attack for the opponent based on a scoring system.
+	 * @return The best attack
+	 */
 	public function selectBestOpponentAttack():Dynamic
 	{
 		var attacks = [OPPONENT.data.attack1, OPPONENT.data.attack2, OPPONENT.data.attack3];
-		function scoreAttack(attack:Dynamic):Int
+		inline function scoreAttack(attack:Dynamic):Int
 		{
 			var score = attack.baseDamage;
 			if (attack.baseDamage > PLAYER.HP)
@@ -113,23 +140,31 @@ class BattleManager
 		return bestAttack;
 	}
 
+	/**
+	 * Handles energy gain for the player when defending.
+	 */
 	public function handleDefenceEnergy()
 	{
 		if (flixel.FlxG.random.bool(flixel.FlxG.random.int(25, 50)))
 		{
-			PLAYER.ENERGY++;
-			if (PLAYER.ENERGY > PLAYER.MAX_ENERGY)
-				PLAYER.ENERGY--;
+			PLAYER.ENERGY = Math.min(PLAYER.MAX_ENERGY, PLAYER.ENERGY + 1);
 		}
 	}
 
+	/**
+	 * Checks for move patterns in the player's move history and predicts next move.
+	 * @param setONM Whether to set the opponent's next move
+	 * @return True if a pattern was found
+	 */
 	public function checkMovePatterns(?setONM = true):Bool
 	{
 		final movesList = PLAYER_LAST_MOVES.toString();
-		final two_movesList = movesList.substring(movesList.length - 2, movesList.length);
-		final four_movesList = movesList.substring(movesList.length - 4, movesList.length);
-		final six_movesList = movesList.substring(movesList.length - 6, movesList.length);
-		final eight_movesList = movesList.substring(movesList.length - 8, movesList.length);
+		inline function safeSub(len:Int):String
+			return movesList.substring(Std.int(Math.max(0, movesList.length - len)), movesList.length);
+		final two_movesList = safeSub(2);
+		final four_movesList = safeSub(4);
+		final six_movesList = safeSub(6);
+		final eight_movesList = safeSub(8);
 		final patternStrings = MovePatternGenerator.generateFilteredPatterns([4]);
 		var usingPattern:Bool = false;
 		for (pattern in patternStrings)
@@ -156,9 +191,7 @@ class BattleManager
 						OPPONENT_NEXT_MOVE = DEF_MOVE;
 				}
 				if (flixel.FlxG.random.bool(flixel.FlxG.random.float(0, 4) * 25))
-				{
 					break;
-				}
 			}
 		}
 		return usingPattern;

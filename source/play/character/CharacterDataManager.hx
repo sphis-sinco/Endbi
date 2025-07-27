@@ -2,8 +2,16 @@ package play.character;
 
 import play.character.CharacterData.CharacterAttackInformation;
 
+/**
+ * Manages loading and providing character data for the game.
+ */
 class CharacterDataManager
 {
+	/**
+	 * Returns the character data for a given character name.
+	 * @param character Character name
+	 * @return CharacterData object
+	 */
 	public static function getCharacterJsonFile(character:String):CharacterData
 	{
 		var data:CharacterData = {
@@ -19,20 +27,16 @@ class CharacterDataManager
 			attack1: null,
 			attack2: null,
 			attack3: null,
-
 			max_health: null,
 			max_energy: null,
 			level: null
 		};
-
 		if (character == 'jujer')
 		{
 			data.assetFolder = 'jujer';
-
 			data.assetNames.atk1 = 'slasher';
 			data.assetNames.atk2 = 'basher';
 			data.assetNames.atk3 = 'ninja';
-
 			data.attack1 = {id: 1, baseDamage: 1, name: 'Slasher'};
 			data.attack2 = {id: 2, baseDamage: 3, name: 'Basher'};
 			data.attack3 = {id: 3, baseDamage: 2, name: 'Ninja'};
@@ -45,38 +49,31 @@ class CharacterDataManager
 		{
 			trace('Unknown character: ${character}');
 		}
-
 		data.assetFolder ??= 'tempChar';
-
 		data.assetNames.idle ??= 'idle';
 		data.assetNames.defence ??= 'defence';
 		data.assetNames.death ??= 'death';
 		data.assetNames.atk1 ??= 'atk1';
 		data.assetNames.atk2 ??= 'atk2';
 		data.assetNames.atk3 ??= 'atk3';
-
 		if (data.assetFolder == 'tempChar')
-		{
 			data.assetNames = null;
-		}
-
 		data.attack1 ??= {id: 1, baseDamage: 1, name: 'Attack 1'};
 		data.attack2 ??= {id: 2, baseDamage: 1, name: 'Attack 2'};
 		data.attack3 ??= {id: 3, baseDamage: 1, name: 'Attack 3'};
-
 		data.max_health ??= 5;
 		data.max_energy ??= 5;
 		data.level ??= 1;
-
 		return data;
 	}
 
-	public static function getCharacterJson(character:String):CharacterData
+	/**
+	 * Returns the character data for a given character name (wrapper).
+	 * @param character Character name
+	 * @return CharacterData object
+	 */
+	public static inline function getCharacterJson(character:String):CharacterData
 	{
-		var returnJson:CharacterData = null;
-
-		returnJson = getCharacterJsonFile(character);
-
-		return returnJson;
+		return getCharacterJsonFile(character);
 	}
 }
