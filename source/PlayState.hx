@@ -44,17 +44,23 @@ class PlayState extends FlxState
 
 	public var OPPONENT_TEXT:FlxText;
 
-	override public function new()
+	public var PLAYER_CHARACTER_NAME:String;
+	public var OPPONENT_CHARACTER_NAME:String;
+
+	override public function new(player:String, op:String)
 	{
 		super();
+
+		PLAYER_CHARACTER_NAME = player;
+		OPPONENT_CHARACTER_NAME = op;
 
 		var backdrop:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height);
 		add(backdrop);
 
 		TEMPCHAR = new CharacterSprite(CharacterDataManager.getCharacterJson('TEMPCHAR'));
 
-		PLAYER = new CharacterSprite(CharacterDataManager.getCharacterJson('TEMPCHAR'));
-		OPPONENT = new CharacterSprite(CharacterDataManager.getCharacterJson('TEMPCHAR'));
+		PLAYER = new CharacterSprite(CharacterDataManager.getCharacterJson(player));
+		OPPONENT = new CharacterSprite(CharacterDataManager.getCharacterJson(op));
 
 		PLAYER_TEXT = new FlxText();
 		OPPONENT_TEXT = new FlxText();
