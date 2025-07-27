@@ -1,0 +1,1 @@
+fix usages of libraries. Using import.hx if they are used multiples times and using .* if multiple classes are used from the same library folder, don't do something like flixel.FlxG
