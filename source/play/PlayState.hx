@@ -36,8 +36,6 @@ class PlayState extends FlxState
 	{
 		super();
 
-		FlxG.camera.flash(0xFF000000, 0.5, true);
-
 		MovePatternGenerator.keys = [ATK_MOVE, DEF_MOVE];
 
 		var backdrop:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height);
@@ -53,6 +51,8 @@ class PlayState extends FlxState
 
 		if (instance != null)
 		{
+			FlxG.camera.flash(0xFF000000, 0.5, true);
+
 			PLAYER.LEVEL = instance.PLAYER.LEVEL;
 			PLAYER.ENERGY = instance.PLAYER.ENERGY;
 			PLAYER.HP = instance.PLAYER.HP;
