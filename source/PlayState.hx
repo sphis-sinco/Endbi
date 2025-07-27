@@ -56,14 +56,12 @@ class PlayState extends FlxState
 		var backdrop:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height);
 		add(backdrop);
 
+		PLAYER_TEXT = new FlxText();
+		OPPONENT_TEXT = new FlxText();
+
 		if (instance != null)
 		{
-			this.PLAYER = instance.PLAYER;
-			this.OPPONENT = instance.OPPONENT;
-
-			this.PLAYER_TEXT = instance.PLAYER_TEXT;
-			this.OPPONENT_TEXT = instance.OPPONENT_TEXT;
-
+			this.PLAYER_LEVEL = instance.PLAYER_LEVEL;
 			this.PLAYER_ENERGY = instance.PLAYER_ENERGY;
 			this.PLAYER_HEALTH = instance.PLAYER_HEALTH;
 			this.PLAYER_MAXENERGY = instance.PLAYER_MAXENERGY;
@@ -78,9 +76,6 @@ class PlayState extends FlxState
 			PLAYER = new CharacterSprite(CharacterDataManager.getCharacterJson(player));
 		if (OPPONENT == null || op != OPPONENT_CHARACTER_NAME)
 			OPPONENT = new CharacterSprite(CharacterDataManager.getCharacterJson(op));
-
-		PLAYER_TEXT ??= new FlxText();
-		OPPONENT_TEXT ??= new FlxText();
 
 		ATTACK_BUTTONS = new FlxTypedGroup<FlxButton>();
 
@@ -168,12 +163,18 @@ class PlayState extends FlxState
 
 		if (OPPONENT_HEALTH < 0)
 		{
-			PLAYER_LEVEL += 1;
-			PLAYER_MAXENERGY += 5;
+			final energyIncrease = 5 * Std.int(PLAYER_ENERGY / PLAYER_MAXENERGY);
 
-			if (PLAYER_LEVEL > 20)
-				PLAYER_MAXENERGY -= 5;
-			// swap op
+			PLAYER_LEVEL++;
+			PLAYER_MAXENERGY += energyIncrease;
+
+			if (PLAYER_LEVEL > 20 || energyIncrease == 0)
+			{
+				PLAYER_LEVEL--;
+				PLAYER_MAXENERGY -= energyIncrease;
+			}
+
+			FlxG.switchState(() -> new PlayState(PLAYER_CHARACTER_NAME, OPPONENT_CHARACTER_NAME));
 		}
 		if (PLAYER_ENERGY < 0)
 		{
