@@ -1,12 +1,13 @@
 package;
 
 import flixel.FlxState;
+import flixel.text.FlxText;
 import play.character.CharacterDataManager;
 import play.character.CharacterSprite;
 
 class PlayState extends FlxState
 {
-	public var tempchar:CharacterSprite;
+	public var TEMPCHAR:CharacterSprite;
 
 	public var PLAYER:CharacterSprite;
 	public var PLAYER_HEALTH:Int = 1;
@@ -21,10 +22,10 @@ class PlayState extends FlxState
 		var backdrop:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height);
 		add(backdrop);
 
-		tempchar = new CharacterSprite(CharacterDataManager.getCharacterJson('tempChar'));
+		TEMPCHAR = new CharacterSprite(CharacterDataManager.getCharacterJson('TEMPCHAR'));
 
-		PLAYER = new CharacterSprite(CharacterDataManager.getCharacterJson('tempChar'));
-		OPPONENT = new CharacterSprite(CharacterDataManager.getCharacterJson('tempChar'));
+		PLAYER = new CharacterSprite(CharacterDataManager.getCharacterJson('TEMPCHAR'));
+		OPPONENT = new CharacterSprite(CharacterDataManager.getCharacterJson('TEMPCHAR'));
 	}
 
 	override public function create()
@@ -34,8 +35,8 @@ class PlayState extends FlxState
 		final charWidthOffset:Int = 6;
 		final charHeightOffset:Int = 6;
 
-		PLAYER.setPosition(tempchar.width * charWidthOffset, tempchar.height * charHeightOffset);
-		OPPONENT.setPosition(FlxG.width - tempchar.width * charWidthOffset, tempchar.height * charHeightOffset);
+		PLAYER.setPosition(TEMPCHAR.width * charWidthOffset, TEMPCHAR.height * charHeightOffset);
+		OPPONENT.setPosition(FlxG.width - TEMPCHAR.width * charWidthOffset, TEMPCHAR.height * charHeightOffset);
 
 		add(PLAYER);
 		add(OPPONENT);
