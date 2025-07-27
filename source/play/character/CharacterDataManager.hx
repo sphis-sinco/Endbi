@@ -29,12 +29,13 @@ class CharacterDataManager
 		{
 			data.assetFolder = 'jujer';
 
-			// temporary asset names for jujer
-			data.assetNames.defence = 'idle';
-			data.assetNames.death = 'idle';
-			data.assetNames.atk1 = 'idle';
-			data.assetNames.atk2 = 'idle';
-			data.assetNames.atk3 = 'idle';
+			data.assetNames.atk1 = 'slasher';
+			data.assetNames.atk2 = 'basher';
+			data.assetNames.atk3 = 'ninja';
+
+			data.attack1 = {id: 1, baseDamage: 1, name: 'Slasher'};
+			data.attack2 = {id: 2, baseDamage: 3, name: 'Basher'};
+			data.attack3 = {id: 3, baseDamage: 2, name: 'Ninja'};
 		}
 		else if (character == 'tempChar')
 		{
