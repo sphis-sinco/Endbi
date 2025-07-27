@@ -3,14 +3,14 @@ package play.character;
 typedef CharacterData =
 {
 	var assetFolder:String;
-	var assetNames:
+	var ?assetNames:
 		{
-			var idle:String;
-			var defence:String;
-			var death:String;
-			var atk1:String;
-			var atk2:String;
-			var atk3:String;
+			var ?idle:String;
+			var ?defence:String;
+			var ?death:String;
+			var ?atk1:String;
+			var ?atk2:String;
+			var ?atk3:String;
 		};
 
 	var attack1:CharacterAttackInformation;
