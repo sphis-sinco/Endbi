@@ -196,6 +196,14 @@ class PlayState extends FlxState
 
 	public function defence()
 	{
+		if (FlxG.random.bool(FlxG.random.int(25, 50)))
+		{
+			PLAYER_ENERGY++;
+
+			if (PLAYER_ENERGY > PLAYER_MAXENERGY)
+				PLAYER_ENERGY--;
+		}
+
 		opponentAttack();
 	}
 
