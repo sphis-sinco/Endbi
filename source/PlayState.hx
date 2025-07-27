@@ -169,17 +169,28 @@ class PlayState extends FlxState
 			{
 				// sfx goes here
 				FlxFlicker.stopFlickering(OPPONENT);
+				OPPONENT.playAnimation("defence", 0.25);
 				FlxFlicker.flicker(OPPONENT, 1, 0.05, true, true, flicker ->
 				{
 					if (OPPONENT.HP <= 0)
+					{
+						OPPONENT.playAnimation("death", 0.8);
 						deadEnemy();
+					}
+					else
+					{
+						OPPONENT.playAnimation("idle");
+					}
 				});
 			}
 		}
+
+		PLAYER.playAnimation("atk1", 0.25);
 		PLAYER.ENERGY -= 1;
 
 		if (OPPONENT.HP < 0)
 		{
+			OPPONENT.playAnimation("death", 0.8);
 			deadEnemy();
 		}
 		if (PLAYER.ENERGY < 0)
@@ -189,6 +200,7 @@ class PlayState extends FlxState
 
 		if (FlxG.random.bool(FlxG.random.int(0, 100)) || defence)
 		{
+			OPPONENT.playAnimation("atk1", 0.25);
 			opMove();
 		}
 	}
@@ -216,10 +228,10 @@ class PlayState extends FlxState
 		trace('--------def--------');
 		PLAYER_LAST_MOVES += DEF_MOVE;
 
+		PLAYER.playAnimation("defence", 0.25);
 		if (FlxG.random.bool(FlxG.random.int(25, 50)))
 		{
 			PLAYER.ENERGY++;
-
 			if (PLAYER.ENERGY > PLAYER.MAX_ENERGY)
 				PLAYER.ENERGY--;
 			else
@@ -230,6 +242,7 @@ class PlayState extends FlxState
 
 		if (FlxG.random.bool(FlxG.random.int(0, 100)))
 		{
+			OPPONENT.playAnimation("atk1", 0.25);
 			opMove(true);
 		}
 	}
@@ -289,6 +302,7 @@ class PlayState extends FlxState
 
 			final energyDiv = (OPPONENT.ENERGY / OPPONENT.MAX_ENERGY);
 			final prevPH = PLAYER.HP;
+			PLAYER.playAnimation("defence", 0.25);
 			PLAYER.HP -= Std.int(val / ((playerDefend) ? (2 * energyDiv) : (1 * energyDiv)));
 			{
 				if (prevPH != PLAYER.HP)
@@ -298,14 +312,24 @@ class PlayState extends FlxState
 					FlxFlicker.flicker(PLAYER, 1, 0.05, true, true, flicker ->
 					{
 						if (PLAYER.HP <= 0)
+						{
+							PLAYER.playAnimation("death", 0.8);
 							deadPlayer();
+						}
+						else
+						{
+							PLAYER.playAnimation("idle");
+						}
 					});
 				}
 			}
+
+			OPPONENT.playAnimation("atk1", 0.25);
 			OPPONENT.ENERGY -= 1;
 
 			if (PLAYER.HP < 0)
 			{
+				PLAYER.playAnimation("death", 0.8);
 				deadPlayer();
 			}
 			if (OPPONENT.ENERGY < 0)
