@@ -118,15 +118,15 @@ class PlayState extends FlxState
 
 		ATTACK_BUTTONS.add(new FlxButton(0, 0, PLAYER.data.attack1.name, () ->
 		{
-			attackOp(Std.int(PLAYER.data.attack1.baseDamage * (PLAYER.ENERGY / PLAYER.MAX_ENERGY)));
+			attackOp(PLAYER.data.attack1);
 		}));
 		ATTACK_BUTTONS.add(new FlxButton(0, 32, PLAYER.data.attack2.name, () ->
 		{
-			attackOp(Std.int(PLAYER.data.attack2.baseDamage * (PLAYER.ENERGY / PLAYER.MAX_ENERGY)));
+			attackOp(PLAYER.data.attack2);
 		}));
 		ATTACK_BUTTONS.add(new FlxButton(0, 64, PLAYER.data.attack3.name, () ->
 		{
-			attackOp(Std.int(PLAYER.data.attack3.baseDamage * (PLAYER.ENERGY / PLAYER.MAX_ENERGY)));
+			attackOp(PLAYER.data.attack3);
 		}));
 
 		for (attackbtn in ATTACK_BUTTONS.members)
@@ -140,7 +140,7 @@ class PlayState extends FlxState
 		instance = this;
 	}
 
-	public function attackOp(val:Int)
+	public function attackOp(attack:CharacterAttackInformation)
 	{
 		trace('--------atk--------');
 		PLAYER_LAST_MOVES += ATK_MOVE;
@@ -163,7 +163,7 @@ class PlayState extends FlxState
 
 		final energyDiv = (PLAYER.ENERGY / PLAYER.MAX_ENERGY);
 		final prevOH = OPPONENT.HP;
-		OPPONENT.HP -= Std.int(val / ((defence) ? (2 * energyDiv) : (1 * energyDiv)));
+		OPPONENT.HP -= Std.int(attack.baseDamage * energyDiv / ((defence) ? 2 : 1));
 		{
 			if (prevOH != OPPONENT.HP)
 			{
@@ -185,7 +185,7 @@ class PlayState extends FlxState
 			}
 		}
 
-		PLAYER.playAnimation("atk1", 0.25);
+		PLAYER.playAnimation('atk${attack.id}', 0.25);
 		PLAYER.ENERGY -= 1;
 
 		if (OPPONENT.HP < 0)
@@ -200,7 +200,6 @@ class PlayState extends FlxState
 
 		if (FlxG.random.bool(FlxG.random.int(0, 100)) || defence)
 		{
-			OPPONENT.playAnimation("atk1", 0.25);
 			opMove();
 		}
 	}
@@ -242,7 +241,6 @@ class PlayState extends FlxState
 
 		if (FlxG.random.bool(FlxG.random.int(0, 100)))
 		{
-			OPPONENT.playAnimation("atk1", 0.25);
 			opMove(true);
 		}
 	}
@@ -324,7 +322,7 @@ class PlayState extends FlxState
 				}
 			}
 
-			OPPONENT.playAnimation("atk1", 0.25);
+			OPPONENT.playAnimation('atk${bestAttack.id}', 0.25);
 			OPPONENT.ENERGY -= 1;
 
 			if (PLAYER.HP < 0)

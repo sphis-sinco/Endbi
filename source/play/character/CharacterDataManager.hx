@@ -4,11 +4,6 @@ import play.character.CharacterData.CharacterAttackInformation;
 
 class CharacterDataManager
 {
-	static final defaultAttackInformation:CharacterAttackInformation = {
-		baseDamage: 1,
-		name: 'Default Attack'
-	};
-
 	public static function getCharacterJsonFile(character:String):CharacterData
 	{
 		var data:CharacterData = {
@@ -64,9 +59,9 @@ class CharacterDataManager
 			data.assetNames = null;
 		}
 
-		data.attack1 ??= defaultAttackInformation;
-		data.attack2 ??= defaultAttackInformation;
-		data.attack3 ??= defaultAttackInformation;
+		data.attack1 ??= {id: 1, baseDamage: 1, name: 'Attack 1'};
+		data.attack2 ??= {id: 2, baseDamage: 1, name: 'Attack 2'};
+		data.attack3 ??= {id: 3, baseDamage: 1, name: 'Attack 3'};
 
 		data.max_health ??= 5;
 		data.max_energy ??= 5;

@@ -24,6 +24,7 @@ typedef CharacterData =
 
 typedef CharacterAttackInformation =
 {
+	var id:Int;
 	var name:String;
 	var baseDamage:Int;
 }
