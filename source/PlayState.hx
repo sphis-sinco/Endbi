@@ -303,7 +303,7 @@ class PlayState extends FlxState
 						OPPONENT_NEXT_MOVE = PLAYER_DEF_MOVE;
 				}
 
-				if (FlxG.random.bool(75)) // player may deviate
+				if (FlxG.random.bool(FlxG.random.float(0, 4) * 25)) // player may deviate
 					break;
 			}
 		}
