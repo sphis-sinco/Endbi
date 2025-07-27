@@ -177,6 +177,7 @@ class PlayState extends FlxState
 			if (prevOH != OPPONENT_HEALTH)
 			{
 				// sfx goes here
+				FlxFlicker.stopFlickering(OPPONENT);
 				FlxFlicker.flicker(OPPONENT, 1, 0.05);
 			}
 		}
