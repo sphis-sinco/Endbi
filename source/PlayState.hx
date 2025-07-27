@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxState;
+import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
@@ -170,7 +171,15 @@ class PlayState extends FlxState
 			trace('Opponent defended: $def_reason');
 
 		final energyDiv = (PLAYER_ENERGY / PLAYER_MAXENERGY);
+		final prevOH = OPPONENT_HEALTH;
 		OPPONENT_HEALTH -= Std.int(val / ((defence) ? (2 * energyDiv) : (1 * energyDiv)));
+		{
+			if (prevOH != OPPONENT_HEALTH)
+			{
+				// sfx goes here
+				FlxFlicker.flicker(OPPONENT, 1, 0.05);
+			}
+		}
 		PLAYER_ENERGY -= 1;
 
 		if (OPPONENT_HEALTH < 0)
@@ -227,19 +236,19 @@ class PlayState extends FlxState
 	public function checkMovePatterns():Bool
 	{
 		trace('------movepat------');
-		final movesList = PLAYER_LAST_MOVES;
+		final movesList = PLAYER_LAST_MOVES.toString();
 		trace('movesList: $movesList');
 
-		final two_movesList = movesList.toString().substring(0, 2);
+		final two_movesList = movesList.substring(movesList.length - 2, movesList.length);
 		trace('two_movesList: $two_movesList');
 
-		final four_movesList = movesList.toString().substring(0, 4);
+		final four_movesList = movesList.substring(movesList.length - 4, movesList.length);
 		trace('four_movesList: $four_movesList');
 
-		final six_movesList = movesList.toString().substring(0, 6);
+		final six_movesList = movesList.substring(movesList.length - 6, movesList.length);
 		trace('six_movesList: $six_movesList');
 
-		final eight_movesList = movesList.toString().substring(0, 8);
+		final eight_movesList = movesList.substring(movesList.length - 8, movesList.length);
 		trace('eight_movesList: $eight_movesList');
 
 		final patternStrings = MovePatternGenerator.generateFilteredPatterns();
