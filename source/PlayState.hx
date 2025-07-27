@@ -6,6 +6,7 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import play.character.CharacterDataManager;
 import play.character.CharacterSprite;
+import play.op_ai.MovePatternGenerator;
 
 class PlayState extends FlxState
 {
@@ -54,6 +55,8 @@ class PlayState extends FlxState
 	override public function new(player:String, op:String)
 	{
 		super();
+
+		MovePatternGenerator.keys = [PLAYER_ATK_MOVE, PLAYER_DEF_MOVE];
 
 		var backdrop:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height);
 		add(backdrop);
@@ -239,32 +242,7 @@ class PlayState extends FlxState
 		final eight_movesList = movesList.toString().substring(0, 8);
 		trace('eight_movesList: $eight_movesList');
 
-		final patternStringABAB = '$PLAYER_ATK_MOVE$PLAYER_DEF_MOVE$PLAYER_ATK_MOVE$PLAYER_DEF_MOVE';
-
-		final patternStringBA = '$PLAYER_DEF_MOVE$PLAYER_ATK_MOVE';
-		final patternStringBABA = '$patternStringBA$patternStringBA';
-
-		final patternStringAA = '$PLAYER_ATK_MOVE$PLAYER_ATK_MOVE';
-		final patternStringAAAA = '$patternStringAA$patternStringAA';
-		final patternStringBB = '$PLAYER_DEF_MOVE$PLAYER_DEF_MOVE';
-		final patternStringBBBB = '$patternStringBB$patternStringBB';
-
-		final patternStringAABB = '$patternStringAA$patternStringBB';
-		final patternStringAAABBB = '$patternStringAA$PLAYER_ATK_MOVE$patternStringBB$PLAYER_DEF_MOVE';
-
-		final patternStringAAAABBBB = '$patternStringAAAA$patternStringBBBB';
-
-		final patternStrings = [
-			patternStringABAB,
-			patternStringBABA,
-			patternStringAA,
-			patternStringAAAA,
-			patternStringBB,
-			patternStringBBBB,
-			patternStringAABB,
-			patternStringAAABBB,
-			patternStringAAAABBBB
-		];
+		final patternStrings = MovePatternGenerator.generateFilteredPatterns();
 
 		var usingPattern:Bool = false;
 
