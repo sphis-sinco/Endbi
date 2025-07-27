@@ -38,5 +38,7 @@ class CharacterSprite extends FlxSprite
 	public function loadAsset(key:String)
 	{
 		loadGraphic(graphics.get(key));
+
+		scale.set(4, 4);
 	}
 }
