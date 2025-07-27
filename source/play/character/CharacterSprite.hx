@@ -10,7 +10,7 @@ class CharacterSprite extends FlxSprite
 	public var MAX_HP:Float = 0;
 	public var ENERGY:Float = 0;
 	public var MAX_ENERGY:Float = 0;
-	public var LEVEL:Float = 0;
+	public var LEVEL:Int = 0;
 
 	var currentAnim:String = 'idle';
 	var animTimer:Float = 0;
