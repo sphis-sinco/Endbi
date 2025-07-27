@@ -187,7 +187,7 @@ class PlayState extends FlxState
 			PLAYER.MAX_ENERGY -= energyIncrease;
 		}
 
-		FlxG.switchState(() -> new PlayState(PLAYER_CHARACTER_NAME, OPPONENT_CHARACTER_NAME));
+		Sys.exit(0);
 	}
 
 	public function defence()
@@ -229,7 +229,7 @@ class PlayState extends FlxState
 		trace('PLAYER DEATH');
 		PLAYER.HP = 0;
 		// TODO: Show death screen, maybe a substate for it?
-		FlxG.switchState(() -> new PlayState(PLAYER_CHARACTER_NAME, OPPONENT_CHARACTER_NAME));
+		Sys.exit(0);
 	}
 
 	// Removed: now handled by BattleManager
