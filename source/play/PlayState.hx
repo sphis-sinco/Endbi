@@ -229,7 +229,7 @@ class PlayState extends FlxState
 
 	// Removed: now handled by BattleManager
 	// Helper function for rounding to 1 decimal place
-	inline function round1(x:Float):Float
+	inline public static function round1(x:Float):Float
 		return Math.fround(x * 10) / 10;
 
 	override public function update(elapsed:Float)
@@ -238,11 +238,11 @@ class PlayState extends FlxState
 
 		for (attackbtn in ATTACK_BUTTONS.members)
 		{
-			attackbtn.visible = ATTACK_SELECT && !(round1(PLAYER.HP) < 1) && !(round1(OPPONENT.HP) < 1);
+			attackbtn.visible = ATTACK_SELECT && !(round1(PLAYER.HP) <= 0) && !(round1(OPPONENT.HP) <= 0);
 		}
 
-		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT && round1(PLAYER.ENERGY) > 0 && !(round1(PLAYER.HP) < 1) && !(round1(OPPONENT.HP) < 1);
-		DEFENCE_BUTTON.visible = !ATTACK_SELECT && !(round1(PLAYER.HP) < 1) && !(round1(OPPONENT.HP) < 1);
+		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT && round1(PLAYER.ENERGY) > 0 && !(round1(PLAYER.HP) <= 0) && !(round1(OPPONENT.HP) <= 0);
+		DEFENCE_BUTTON.visible = !ATTACK_SELECT && !(round1(PLAYER.HP) <= 0) && !(round1(OPPONENT.HP) <= 0);
 
 		PLAYER_TEXT.text = 'HP: ' + round1(PLAYER.HP) + '/' + round1(PLAYER.MAX_HP) + '\nENERGY: ' + round1(PLAYER.ENERGY) + '/' + round1(PLAYER.MAX_ENERGY)
 			+ '\nLEVEL: ' + PLAYER.LEVEL;

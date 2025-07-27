@@ -34,7 +34,7 @@ class BattleManager
 			OPPONENT.playAnimation('defence', 0.25);
 			FlxFlicker.flicker(OPPONENT, 1, 0.05, true, true, flicker ->
 			{
-				if (OPPONENT.HP <= 0)
+				if (PlayState.round1(OPPONENT.HP) <= 0)
 				{
 					OPPONENT.playAnimation('death', 0.8);
 					onDeath();
@@ -59,7 +59,7 @@ class BattleManager
 			FlxFlicker.stopFlickering(PLAYER);
 			FlxFlicker.flicker(PLAYER, 1, 0.05, true, true, flicker ->
 			{
-				if (PLAYER.HP <= 0)
+				if (PlayState.round1(PLAYER.HP) <= 0)
 				{
 					PLAYER.playAnimation('death', 0.8);
 					onDeath();
