@@ -9,15 +9,22 @@ class CharacterDataManager
 		name: 'Default Attack'
 	};
 
-	public static function getCharacterJsonFile(character:String)
+	public static function getCharacterJsonFile(character:String):CharacterData
 	{
-		switch (character)
-		{
-			default:
-				return null;
-		}
-
-		return null;
+		return {
+			assetFolder: null,
+			assetNames: {
+				idle: null,
+				defence: null,
+				death: null,
+				atk1: null,
+				atk2: null,
+				atk3: null,
+			},
+			attack1: null,
+			attack2: null,
+			attack3: null
+		};
 	}
 
 	public static function getCharacterJson(character:String):CharacterData
