@@ -148,28 +148,16 @@ class PlayState extends FlxState
 	public function attackOp(val:Int)
 	{
 		trace('--------atk--------');
+		PLAYER_LAST_MOVES += PLAYER_ATK_MOVE;
+
 		ATTACK_SELECT = false;
 
 		var defence = false;
 		var def_reason:String = '';
 
-		final movesList = PLAYER_LAST_MOVES;
-		trace('movesList: $movesList');
+		final usingPattern:Bool = checkMovePatterns();
 
-		final attacksList = movesList.split(PLAYER_DEF_MOVE);
-		trace('attacksList: $attacksList');
-
-		final lastAttack = attacksList[0];
-		final spammingAttack:Bool = lastAttack.length >= 4;
-		trace('lastAttack: $lastAttack');
-
-		final alternatingString = '$PLAYER_ATK_MOVE$PLAYER_DEF_MOVE$PLAYER_ATK_MOVE$PLAYER_DEF_MOVE';
-		final alternating:Bool = movesList.toString().substring(0, 4) == alternatingString;
-
-		trace('movesList.toString().substring(0, 4): ${movesList.toString().substring(0, 4)}');
-		trace('alternating: $alternating');
-
-		if (spammingAttack || alternating)
+		if (usingPattern)
 			def_reason = 'player has been predicted';
 		else if (FlxG.random.int(0, 4) >= 3)
 			def_reason = 'random chance';
@@ -206,13 +194,12 @@ class PlayState extends FlxState
 		{
 			opponentAttack();
 		}
-
-		PLAYER_LAST_MOVES += PLAYER_ATK_MOVE;
 	}
 
 	public function defence()
 	{
 		trace('--------def--------');
+		PLAYER_LAST_MOVES += PLAYER_DEF_MOVE;
 
 		if (FlxG.random.bool(FlxG.random.int(25, 50)))
 		{
@@ -226,12 +213,88 @@ class PlayState extends FlxState
 		else
 			trace('Did nothing');
 
-		opponentAttack();
-
-		PLAYER_LAST_MOVES += PLAYER_DEF_MOVE;
+		if (FlxG.random.bool(FlxG.random.int(0, 100)) || checkMovePatterns())
+		{
+			opponentAttack();
+		}
 	}
 
 	public function opponentAttack() {}
+
+	public function checkMovePatterns():Bool
+	{
+		trace('------movepat------');
+		final movesList = PLAYER_LAST_MOVES;
+		trace('movesList: $movesList');
+
+		final two_movesList = movesList.toString().substring(0, 2);
+		trace('two_movesList: $two_movesList');
+
+		final four_movesList = movesList.toString().substring(0, 4);
+		trace('four_movesList: $four_movesList');
+
+		final six_movesList = movesList.toString().substring(0, 6);
+		trace('six_movesList: $six_movesList');
+
+		final eight_movesList = movesList.toString().substring(0, 8);
+		trace('eight_movesList: $eight_movesList');
+
+		final patternStringABAB = '$PLAYER_ATK_MOVE$PLAYER_DEF_MOVE$PLAYER_ATK_MOVE$PLAYER_DEF_MOVE';
+
+		final patternStringBA = '$PLAYER_DEF_MOVE$PLAYER_ATK_MOVE';
+		final patternStringBABA = '$patternStringBA$patternStringBA';
+
+		final patternStringAA = '$PLAYER_ATK_MOVE$PLAYER_ATK_MOVE';
+		final patternStringAAAA = '$patternStringAA$patternStringAA';
+		final patternStringBB = '$PLAYER_DEF_MOVE$PLAYER_DEF_MOVE';
+		final patternStringBBBB = '$patternStringBB$patternStringBB';
+
+		final patternStringAABB = '$patternStringAA$patternStringBB';
+		final patternStringAAABBB = '$patternStringAA$PLAYER_ATK_MOVE$patternStringBB$PLAYER_DEF_MOVE';
+
+		final patternStringAAAABBBB = '$patternStringAAAA$patternStringBBBB';
+
+		final patternStrings = [
+			patternStringABAB,
+			patternStringBABA,
+			patternStringAA,
+			patternStringAAAA,
+			patternStringBB,
+			patternStringBBBB,
+			patternStringAABB,
+			patternStringAAABBB,
+			patternStringAAAABBBB
+		];
+
+		var usingPattern:Bool = false;
+
+		for (pattern in patternStrings)
+		{
+			trace('Checking for pattern "$pattern"');
+
+			switch (pattern.length)
+			{
+				case 2:
+					usingPattern = two_movesList == pattern;
+				case 4:
+					usingPattern = four_movesList == pattern;
+				case 6:
+					usingPattern = six_movesList == pattern;
+				case 8:
+					usingPattern = eight_movesList == pattern;
+				default:
+					trace('Unimplemented size: ${pattern.length}');
+			}
+			if (usingPattern)
+			{
+				trace('Using pattern: $pattern');
+				break;
+			}
+		}
+		trace('----movepat-end----');
+
+		return usingPattern;
+	}
 
 	override public function update(elapsed:Float)
 	{
