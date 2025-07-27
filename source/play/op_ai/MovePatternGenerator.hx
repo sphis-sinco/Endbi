@@ -11,7 +11,7 @@ class MovePatternGenerator
 		var seen:Map<String, Bool> = new Map();
 
 		var lens = lengths;
-		lens ??= [10];
+		lens ??= [2, 4, 6, 8];
 
 		for (length in lens)
 		{
