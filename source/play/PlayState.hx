@@ -53,7 +53,7 @@ class PlayState extends FlxState
 		{
 			FlxG.camera.flash(0xFF000000, 0.5, true);
 
-			if (instance.PLAYER.HP >= 0)
+			if (round1(instance.PLAYER.HP) >= 0)
 			{
 				PLAYER.HP = instance.PLAYER.HP;
 				PLAYER.ENERGY = instance.PLAYER.ENERGY;
