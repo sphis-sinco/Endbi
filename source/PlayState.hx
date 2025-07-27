@@ -13,6 +13,8 @@ class PlayState extends FlxState
 
 	public var TEMPCHAR:CharacterSprite;
 
+	public var DEFENCE_BUTTON:FlxButton;
+
 	public var ATTACK_SELECT:Bool = false;
 	public var ATTACK_SELECT_BUTTON:FlxButton;
 
@@ -84,6 +86,8 @@ class PlayState extends FlxState
 			ATTACK_SELECT = true;
 		});
 
+		DEFENCE_BUTTON = new FlxButton(0, FlxG.height - 3 * 48 + 32, 'Defence', defence);
+
 		PLAYER_CHARACTER_NAME = player;
 		OPPONENT_CHARACTER_NAME = op;
 	}
@@ -136,6 +140,7 @@ class PlayState extends FlxState
 		}
 
 		add(ATTACK_SELECT_BUTTON);
+		add(DEFENCE_BUTTON);
 
 		instance = this;
 	}
@@ -181,8 +186,20 @@ class PlayState extends FlxState
 			PLAYER_ENERGY = 0;
 		}
 
+		if (FlxG.random.bool(FlxG.random.int(0, 100)) || defence)
+		{
+			opponentAttack();
+		}
+
 		PLAYER_LAST_MOVES += PLAYER_ATK_MOVE;
 	}
+
+	public function defence()
+	{
+		opponentAttack();
+	}
+
+	public function opponentAttack() {}
 
 	override public function update(elapsed:Float)
 	{
@@ -194,6 +211,7 @@ class PlayState extends FlxState
 		}
 
 		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT && PLAYER_ENERGY > 0;
+		DEFENCE_BUTTON.visible = !ATTACK_SELECT;
 
 		PLAYER_TEXT.text = 'HP: ${PLAYER_HEALTH}/${PLAYER_MAXHEALTH}' + '\nENERGY: ${PLAYER_ENERGY}/${PLAYER_MAXENERGY}' + '\nLEVEL: ${PLAYER_LEVEL}';
 		OPPONENT_TEXT.text = 'HP: ${OPPONENT_HEALTH}/${OPPONENT_MAXHEALTH}' + '\nENERGY: ${OPPONENT_ENERGY}/${OPPONENT_MAXENERGY}'
