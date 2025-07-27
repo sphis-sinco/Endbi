@@ -12,6 +12,7 @@ class PlayState extends FlxState
 	public var TEMPCHAR:CharacterSprite;
 
 	public var ATTACK_SELECT:Bool = true;
+	public var ATTACK_SELECT_BUTTON:FlxButton;
 
 	public var ATTACK_BUTTONS:FlxTypedGroup<FlxButton>;
 
@@ -55,6 +56,11 @@ class PlayState extends FlxState
 		OPPONENT_TEXT = new FlxText();
 
 		ATTACK_BUTTONS = new FlxTypedGroup<FlxButton>();
+
+		ATTACK_SELECT_BUTTON = new FlxButton(0, FlxG.height - 3 * 48, 'Attack', () ->
+		{
+			ATTACK_SELECT = true;
+		});
 	}
 
 	override public function create()
@@ -88,24 +94,32 @@ class PlayState extends FlxState
 
 		ATTACK_BUTTONS.add(new FlxButton(0, 0, PLAYER.data.attack1.name, () ->
 		{
-			ATTACK_SELECT = false;
-			OPPONENT_HEALTH -= Std.int(PLAYER.data.attack1.baseDamage * (PLAYER_ENERGY / PLAYER_MAXENERGY));
+			attackOp(Std.int(PLAYER.data.attack1.baseDamage * (PLAYER_ENERGY / PLAYER_MAXENERGY)));
 		}));
 		ATTACK_BUTTONS.add(new FlxButton(0, 32, PLAYER.data.attack2.name, () ->
 		{
-			ATTACK_SELECT = false;
-			OPPONENT_HEALTH -= Std.int(PLAYER.data.attack2.baseDamage * (PLAYER_ENERGY / PLAYER_MAXENERGY));
+			attackOp(Std.int(PLAYER.data.attack2.baseDamage * (PLAYER_ENERGY / PLAYER_MAXENERGY)));
 		}));
 		ATTACK_BUTTONS.add(new FlxButton(0, 64, PLAYER.data.attack3.name, () ->
 		{
-			ATTACK_SELECT = false;
-			OPPONENT_HEALTH -= Std.int(PLAYER.data.attack3.baseDamage * (PLAYER_ENERGY / PLAYER_MAXENERGY));
+			attackOp(Std.int(PLAYER.data.attack3.baseDamage * (PLAYER_ENERGY / PLAYER_MAXENERGY)));
 		}));
 
 		for (attackbtn in ATTACK_BUTTONS.members)
 		{
 			attackbtn.y += (FlxG.height - ATTACK_BUTTONS.members.length * 48);
 		}
+
+		add(ATTACK_SELECT_BUTTON);
+	}
+
+	public function attackOp(val:Int)
+	{
+		ATTACK_SELECT = false;
+
+		final defence = FlxG.random.int(0, 4) >= 3;
+
+		OPPONENT_HEALTH -= Std.int(val / ((defence) ? 2 : 1));
 	}
 
 	override public function update(elapsed:Float)
@@ -116,6 +130,8 @@ class PlayState extends FlxState
 		{
 			attackbtn.visible = ATTACK_SELECT;
 		}
+
+		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT;
 
 		PLAYER_TEXT.text = 'HP: ${PLAYER_HEALTH}/${PLAYER_MAXHEALTH}' + '\nENERGY: ${PLAYER_ENERGY}/${PLAYER_MAXENERGY}' + '\nLEVEL: ${PLAYER_LEVEL}';
 		OPPONENT_TEXT.text = 'HP: ${OPPONENT_HEALTH}/${OPPONENT_MAXHEALTH}' + '\nENERGY: ${OPPONENT_ENERGY}/${OPPONENT_MAXENERGY}'
