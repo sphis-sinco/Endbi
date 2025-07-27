@@ -12,7 +12,7 @@ class CharacterSprite extends FlxSprite
 	public var MAX_ENERGY:Int = 0;
 	public var LEVEL:Int = 0;
 
-	var currentAnim:String = "idle";
+	var currentAnim:String = 'idle';
 	var animTimer:Float = 0;
 	var animDuration:Float = 0;
 	var animPlaying:Bool = false;
@@ -74,7 +74,7 @@ class CharacterSprite extends FlxSprite
 		loadAsset(key);
 		animPlaying = true;
 		animTimer = 0;
-		animDuration = duration != null ? duration : (key == "death" ? 0.8 : 0.3);
+		animDuration = duration != null ? duration : (key == 'death' ? 0.8 : 0.3);
 	}
 
 	public function stopAnimation()
@@ -83,7 +83,7 @@ class CharacterSprite extends FlxSprite
 		animTimer = 0;
 		animDuration = 0;
 		animQueue = null;
-		playAnimation("idle");
+		playAnimation('idle');
 	}
 
 	override public function update(elapsed:Float)
@@ -102,9 +102,9 @@ class CharacterSprite extends FlxSprite
 					animQueue = null;
 					playAnimation(next);
 				}
-				else if (currentAnim != "idle")
+				else if (currentAnim != 'idle')
 				{
-					playAnimation("idle");
+					playAnimation('idle');
 				}
 			}
 		}
