@@ -134,7 +134,8 @@ class PlayState extends FlxState
 		if (defence)
 			trace('Opponent defended: $def_reason');
 
-		OPPONENT_HEALTH -= Std.int(val / ((defence) ? 2 : 1));
+		OPPONENT_HEALTH -= Std.int(val / ((defence) ? 2 : (1 * (PLAYER_ENERGY / PLAYER_MAXENERGY))));
+		PLAYER_ENERGY -= 1;
 
 		PLAYER_LAST_MOVES += PLAYER_ATK_MOVE;
 	}
