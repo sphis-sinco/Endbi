@@ -147,13 +147,29 @@ class PlayState extends FlxState
 
 	public function attackOp(val:Int)
 	{
+		trace('--------atk--------');
 		ATTACK_SELECT = false;
 
 		var defence = false;
 		var def_reason:String = '';
 
-		final spammingAttack:Bool = PLAYER_LAST_MOVES.split(PLAYER_DEF_MOVE)[0].length >= 4;
-		if (spammingAttack)
+		final movesList = PLAYER_LAST_MOVES;
+		trace('movesList: $movesList');
+
+		final attacksList = movesList.split(PLAYER_DEF_MOVE);
+		trace('attacksList: $attacksList');
+
+		final lastAttack = attacksList[0];
+		final spammingAttack:Bool = lastAttack.length >= 4;
+		trace('lastAttack: $lastAttack');
+
+		final alternatingString = '$PLAYER_ATK_MOVE$PLAYER_DEF_MOVE$PLAYER_ATK_MOVE$PLAYER_DEF_MOVE';
+		final alternating:Bool = movesList.toString().substring(0, 4) == alternatingString;
+
+		trace('movesList.toString().substring(0, 4): ${movesList.toString().substring(0, 4)}');
+		trace('alternating: $alternating');
+
+		if (spammingAttack || alternating)
 			def_reason = 'player has been predicted';
 		else if (FlxG.random.int(0, 4) >= 3)
 			def_reason = 'random chance';
@@ -196,15 +212,23 @@ class PlayState extends FlxState
 
 	public function defence()
 	{
+		trace('--------def--------');
+
 		if (FlxG.random.bool(FlxG.random.int(25, 50)))
 		{
 			PLAYER_ENERGY++;
 
 			if (PLAYER_ENERGY > PLAYER_MAXENERGY)
 				PLAYER_ENERGY--;
+			else
+				trace('Increased energy');
 		}
+		else
+			trace('Did nothing');
 
 		opponentAttack();
+
+		PLAYER_LAST_MOVES += PLAYER_DEF_MOVE;
 	}
 
 	public function opponentAttack() {}
