@@ -53,11 +53,13 @@ class PlayState extends FlxState
 		{
 			FlxG.camera.flash(0xFF000000, 0.5, true);
 
-			PLAYER.LEVEL = instance.PLAYER.LEVEL;
-			PLAYER.ENERGY = instance.PLAYER.ENERGY;
-			PLAYER.HP = instance.PLAYER.HP;
-			PLAYER.MAX_ENERGY = instance.PLAYER.MAX_ENERGY;
-			PLAYER.MAX_HP = instance.PLAYER.MAX_HP;
+			if (instance.PLAYER.HP >= 0)
+			{
+				PLAYER.HP = instance.PLAYER.HP;
+				PLAYER.ENERGY = instance.PLAYER.ENERGY;
+				PLAYER.MAX_ENERGY = instance.PLAYER.MAX_ENERGY;
+				PLAYER.MAX_HP = instance.PLAYER.MAX_HP;
+			}
 
 			instance = null;
 		}
@@ -224,7 +226,6 @@ class PlayState extends FlxState
 	{
 		trace('PLAYER DEATH');
 		PLAYER.HP = 0;
-		instance = null;
 		// TODO: Show death screen, maybe a substate for it?
 		FlxG.switchState(() -> new PlayState(PLAYER_CHARACTER_NAME, OPPONENT_CHARACTER_NAME));
 	}
