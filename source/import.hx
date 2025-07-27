@@ -1,1 +1,3 @@
 import flixel.*;
+
+using StringTools;

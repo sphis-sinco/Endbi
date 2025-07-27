@@ -40,6 +40,8 @@ class PlayState extends FlxState
 
 	public var OPPONENT:CharacterSprite;
 
+	public var OPPONENT_NEXT_MOVE:String = '';
+
 	public var OPPONENT_MAXENERGY:Int = 5;
 	public var OPPONENT_ENERGY:Int = 5;
 
@@ -241,13 +243,14 @@ class PlayState extends FlxState
 		attack = OPPONENT_LEVEL > PLAYER_LEVEL ? true : attack;
 		attack = OPPONENT_ENERGY > PLAYER_ENERGY ? true : attack;
 		attack = PLAYER_HEALTH == 1 ? true : attack;
+		attack = OPPONENT_NEXT_MOVE == PLAYER_ATK_MOVE ? true : attack;
 		attack = OPPONENT_ENERGY == 0 ? false : attack;
 
 		trace('Opponent attacking: $attack');
 		trace('----op-move-end----');
 	}
 
-	public function checkMovePatterns():Bool
+	public function checkMovePatterns(?setONM = true):Bool
 	{
 		trace('------movepat------');
 		final movesList = PLAYER_LAST_MOVES.toString();
@@ -289,6 +292,15 @@ class PlayState extends FlxState
 			if (usingPattern)
 			{
 				trace('Using pattern: "$pattern"');
+
+				if (setONM)
+				{
+					if (pattern.endsWith(PLAYER_ATK_MOVE))
+						OPPONENT_NEXT_MOVE = PLAYER_ATK_MOVE;
+					if (pattern.endsWith(PLAYER_DEF_MOVE))
+						OPPONENT_NEXT_MOVE = PLAYER_DEF_MOVE;
+				}
+
 				if (FlxG.random.bool(75)) // player may deviate
 					break;
 			}
