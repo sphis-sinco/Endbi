@@ -10,13 +10,27 @@ class PlayState extends FlxState
 	public var TEMPCHAR:CharacterSprite;
 
 	public var PLAYER:CharacterSprite;
+
+	public var PLAYER_MAXENERGY:Int = 1;
+	public var PLAYER_ENERGY:Int = 1;
+
 	public var PLAYER_MAXHEALTH:Int = 1;
 	public var PLAYER_HEALTH:Int = 1;
+
+	public var PLAYER_LEVEL:Int = 1;
+
 	public var PLAYER_TEXT:FlxText;
 
 	public var OPPONENT:CharacterSprite;
+
+	public var OPPONENT_MAXENERGY:Int = 1;
+	public var OPPONENT_ENERGY:Int = 1;
+
 	public var OPPONENT_MAXHEALTH:Int = 1;
 	public var OPPONENT_HEALTH:Int = 1;
+
+	public var OPPONENT_LEVEL:Int = 1;
+
 	public var OPPONENT_TEXT:FlxText;
 
 	override public function new()
@@ -67,7 +81,8 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 
-		PLAYER_TEXT.text = 'HP: ${PLAYER_HEALTH}/${PLAYER_MAXHEALTH}';
-		OPPONENT_TEXT.text = 'HP: ${OPPONENT_HEALTH}/${OPPONENT_MAXHEALTH}';
+		PLAYER_TEXT.text = 'HP: ${PLAYER_HEALTH}/${PLAYER_MAXHEALTH}' + '\nENERGY: ${PLAYER_ENERGY}/${PLAYER_MAXHEALTH}' + '\nLEVEL: ${PLAYER_LEVEL}';
+		OPPONENT_TEXT.text = 'HP: ${OPPONENT_HEALTH}/${OPPONENT_MAXHEALTH}' + '\nENERGY: ${OPPONENT_ENERGY}/${OPPONENT_MAXHEALTH}'
+			+ '\nLEVEL: ${OPPONENT_LEVEL}';
 	}
 }
