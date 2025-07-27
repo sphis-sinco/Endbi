@@ -23,7 +23,11 @@ class CharacterDataManager
 			},
 			attack1: null,
 			attack2: null,
-			attack3: null
+			attack3: null,
+
+			max_health: null,
+			max_energy: null,
+			level: null
 		};
 	}
 
@@ -50,6 +54,10 @@ class CharacterDataManager
 		returnJson.attack1 ??= defaultAttackInformation;
 		returnJson.attack2 ??= defaultAttackInformation;
 		returnJson.attack3 ??= defaultAttackInformation;
+
+		returnJson.max_health ??= 5;
+		returnJson.max_energy ??= 5;
+		returnJson.level ??= 1;
 
 		return returnJson;
 	}

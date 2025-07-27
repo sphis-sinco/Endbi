@@ -16,6 +16,10 @@ typedef CharacterData =
 	var attack1:CharacterAttackInformation;
 	var attack2:CharacterAttackInformation;
 	var attack3:CharacterAttackInformation;
+
+	var max_health:Null<Int>;
+	var max_energy:Null<Int>;
+	var level:Null<Int>;
 }
 
 typedef CharacterAttackInformation =

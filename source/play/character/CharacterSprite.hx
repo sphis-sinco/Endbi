@@ -1,13 +1,20 @@
 package play.character;
 
 import flixel.graphics.FlxGraphic;
-import flixel.system.FlxAssets.FlxGraphicAsset;
 
 class CharacterSprite extends FlxSprite
 {
 	public var graphics:Map<String, FlxGraphic> = [];
 
 	public var data:CharacterData = null;
+
+	public var HP:Int = 0;
+	public var MAX_HP:Int = 0;
+
+	public var ENERGY:Int = 0;
+	public var MAX_ENERGY:Int = 0;
+
+	public var LEVEL:Int = 0;
 
 	override public function new(data:CharacterData)
 	{
@@ -20,6 +27,14 @@ class CharacterSprite extends FlxSprite
 	public function reload()
 	{
 		graphics = [];
+
+		MAX_HP = data.max_health;
+		HP = MAX_HP;
+
+		MAX_ENERGY = data.max_energy;
+		ENERGY = MAX_ENERGY;
+
+		LEVEL = data.level;
 
 		final prefix:String = 'assets/images/characters/';
 		final suffix:String = '.png';
