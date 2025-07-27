@@ -123,6 +123,16 @@ class BattleManager
 		}
 	}
 
+	public function handleDefenceHealth()
+	{
+		if (FlxG.random.bool(FlxG.random.int(25, 50)))
+		{
+			PLAYER.HP++;
+			if (PLAYER.HP > PLAYER.MAX_HP)
+				PLAYER.HP--;
+		}
+	}
+
 	public function checkMovePatterns(?setONM = true):Bool
 	{
 		final movesList = PLAYER_LAST_MOVES.toString();

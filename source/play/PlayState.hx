@@ -192,6 +192,7 @@ class PlayState extends FlxState
 		trace('--------def--------');
 		PLAYER_LAST_MOVES += DEF_MOVE;
 		PLAYER.playAnimation('defence', 0.25);
+		battleManager.handleDefenceHealth();
 		battleManager.handleDefenceEnergy();
 		if (FlxG.random.bool(FlxG.random.int(0, 100)))
 		{
