@@ -1,4 +1,4 @@
-package;
+package play;
 
 import flixel.FlxState;
 import flixel.effects.FlxFlicker;
