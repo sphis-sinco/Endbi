@@ -287,7 +287,7 @@ class PlayState extends FlxState
 			}
 			if (usingPattern)
 			{
-				trace('Using pattern: $pattern');
+				trace('Using pattern: "$pattern"');
 				break;
 			}
 		}
