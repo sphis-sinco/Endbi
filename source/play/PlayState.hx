@@ -5,6 +5,7 @@ import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
+import play.BattleManager;
 import play.character.CharacterData;
 import play.character.CharacterDataManager;
 import play.character.CharacterSprite;
@@ -18,28 +19,19 @@ class PlayState extends FlxState
 	public var DEF_MOVE:String = 'd';
 
 	public var TEMPCHAR:CharacterSprite;
-
 	public var DEFENCE_BUTTON:FlxButton;
-
 	public var ATTACK_SELECT:Bool = false;
 	public var ATTACK_SELECT_BUTTON:FlxButton;
-
 	public var ATTACK_BUTTONS:FlxTypedGroup<FlxButton>;
-
 	public var PLAYER:CharacterSprite;
-
 	public var PLAYER_LAST_MOVES:String = '';
-
 	public var PLAYER_TEXT:FlxText;
-
 	public var OPPONENT:CharacterSprite;
-
 	public var OPPONENT_NEXT_MOVE:String = '';
-
 	public var OPPONENT_TEXT:FlxText;
-
 	public var PLAYER_CHARACTER_NAME:String;
 	public var OPPONENT_CHARACTER_NAME:String;
+	public var battleManager:BattleManager;
 
 	override public function new(player:String, op:String = 'jujer')
 	{
@@ -137,6 +129,7 @@ class PlayState extends FlxState
 		add(ATTACK_SELECT_BUTTON);
 		add(DEFENCE_BUTTON);
 
+		battleManager = new BattleManager(PLAYER, OPPONENT, ATK_MOVE, DEF_MOVE, PLAYER_LAST_MOVES, OPPONENT_NEXT_MOVE);
 		instance = this;
 	}
 
@@ -144,50 +137,20 @@ class PlayState extends FlxState
 	{
 		trace('--------atk--------');
 		PLAYER_LAST_MOVES += ATK_MOVE;
-
 		ATTACK_SELECT = false;
-
 		var defence = false;
 		var def_reason:String = '';
-
-		final usingPattern:Bool = checkMovePatterns();
-
+		final usingPattern:Bool = battleManager.checkMovePatterns();
 		if (FlxG.random.float(0, 4) >= 3.5)
 			def_reason = 'random chance';
 		else if (usingPattern && FlxG.random.float(0, 2) >= 1.5)
 			def_reason = 'player has been predicted';
-
 		defence = def_reason != '';
 		if (defence)
 			trace('Opponent defended: $def_reason');
-
-		final energyDiv = (PLAYER.ENERGY / PLAYER.MAX_ENERGY);
-		final prevOH = OPPONENT.HP;
-		OPPONENT.HP -= (attack.baseDamage * energyDiv / ((defence) ? 2 : 1));
-		{
-			if (prevOH != OPPONENT.HP)
-			{
-				// sfx goes here
-				FlxFlicker.stopFlickering(OPPONENT);
-				OPPONENT.playAnimation('defence', 0.25);
-				FlxFlicker.flicker(OPPONENT, 1, 0.05, true, true, flicker ->
-				{
-					if (OPPONENT.HP <= 0)
-					{
-						OPPONENT.playAnimation('death', 0.8);
-						deadEnemy();
-					}
-					else
-					{
-						OPPONENT.playAnimation('idle');
-					}
-				});
-			}
-		}
-
+		battleManager.applyAttackToOpponent(attack, defence, deadEnemy);
 		PLAYER.playAnimation('atk${attack.id}', 0.25);
 		PLAYER.ENERGY -= 1;
-
 		if (OPPONENT.HP < 0)
 		{
 			OPPONENT.playAnimation('death', 0.8);
@@ -197,7 +160,6 @@ class PlayState extends FlxState
 		{
 			PLAYER.ENERGY = 0;
 		}
-
 		if (FlxG.random.bool(FlxG.random.int(0, 100)) || defence)
 		{
 			opMove();
@@ -227,19 +189,8 @@ class PlayState extends FlxState
 	{
 		trace('--------def--------');
 		PLAYER_LAST_MOVES += DEF_MOVE;
-
 		PLAYER.playAnimation('defence', 0.25);
-		if (FlxG.random.bool(FlxG.random.int(25, 50)))
-		{
-			PLAYER.ENERGY++;
-			if (PLAYER.ENERGY > PLAYER.MAX_ENERGY)
-				PLAYER.ENERGY--;
-			else
-				trace('Increased energy');
-		}
-		else
-			trace('Did nothing');
-
+		battleManager.handleDefenceEnergy();
 		if (FlxG.random.bool(FlxG.random.int(0, 100)))
 		{
 			opMove(true);
@@ -250,7 +201,6 @@ class PlayState extends FlxState
 	{
 		trace('------op-move------');
 		var attack = false;
-
 		attack = FlxG.random.bool(FlxG.random.int(0, 100)) ? true : attack;
 		attack = OPPONENT.LEVEL > PLAYER.LEVEL ? true : attack;
 		attack = OPPONENT.ENERGY > PLAYER.ENERGY ? true : attack;
@@ -258,85 +208,12 @@ class PlayState extends FlxState
 		attack = OPPONENT_NEXT_MOVE == ATK_MOVE ? true : attack;
 		attack = OPPONENT.ENERGY == 0 ? false : attack;
 		attack = OPPONENT_NEXT_MOVE == DEF_MOVE ? false : attack;
-
 		trace('Opponent attacking: $attack');
-
 		if (attack)
 		{
-			// Gather all attacks
-			var attacks = [OPPONENT.data.attack1, OPPONENT.data.attack2, OPPONENT.data.attack3];
-
-			// Score each attack based on situation
-			function scoreAttack(attack:CharacterAttackInformation):Int
-			{
-				var score = attack.baseDamage;
-
-				if (attack.baseDamage > PLAYER.HP)
-					score += 10; // Can KO player
-				if (OPPONENT.ENERGY > PLAYER.ENERGY && attack.baseDamage < PLAYER.HP)
-					score += 5; // Flex
-				if (PLAYER.HP > OPPONENT.HP && PLAYER.LEVEL > OPPONENT.LEVEL && PLAYER.ENERGY > OPPONENT.ENERGY)
-					score += 3; // Fear
-				if (OPPONENT.HP < PLAYER.HP && attack.baseDamage < PLAYER.HP)
-					score += 2; // Overconfident
-
-				return score;
-			}
-
-			// Pick the attack with the highest score
-			var bestAttack = attacks[0];
-			var bestScore = scoreAttack(bestAttack);
-			for (a in attacks)
-			{
-				var s = scoreAttack(a);
-				trace('attack "${a.name}", score: $s');
-
-				if (s > bestScore)
-				{
-					bestAttack = a;
-					bestScore = s;
-				}
-			}
-			var val = bestAttack.baseDamage;
-
-			final energyDiv = (OPPONENT.ENERGY / OPPONENT.MAX_ENERGY);
-			final prevPH = PLAYER.HP;
-			PLAYER.playAnimation('defence', 0.25);
-			PLAYER.HP -= (val / ((playerDefend) ? (2 * energyDiv) : (1 * energyDiv)));
-			{
-				if (prevPH != PLAYER.HP)
-				{
-					// sfx goes here
-					FlxFlicker.stopFlickering(PLAYER);
-					FlxFlicker.flicker(PLAYER, 1, 0.05, true, true, flicker ->
-					{
-						if (PLAYER.HP <= 0)
-						{
-							PLAYER.playAnimation('death', 0.8);
-							deadPlayer();
-						}
-						else
-						{
-							PLAYER.playAnimation('idle');
-						}
-					});
-				}
-			}
-
-			OPPONENT.playAnimation('atk${bestAttack.id}', 0.25);
-			OPPONENT.ENERGY -= 1;
-
-			if (PLAYER.HP < 0)
-			{
-				PLAYER.playAnimation('death', 0.8);
-				deadPlayer();
-			}
-			if (OPPONENT.ENERGY < 0)
-			{
-				OPPONENT.ENERGY = 0;
-			}
+			var bestAttack = battleManager.selectBestOpponentAttack();
+			battleManager.applyAttackToPlayer(bestAttack, playerDefend, deadPlayer);
 		}
-
 		OPPONENT_NEXT_MOVE = '';
 		trace('----op-move-end----');
 	}
@@ -350,67 +227,7 @@ class PlayState extends FlxState
 		FlxG.switchState(() -> new PlayState(PLAYER_CHARACTER_NAME, OPPONENT_CHARACTER_NAME));
 	}
 
-	public function checkMovePatterns(?setONM = true):Bool
-	{
-		trace('------movepat------');
-		final movesList = PLAYER_LAST_MOVES.toString();
-		trace('movesList: $movesList');
-
-		final two_movesList = movesList.substring(movesList.length - 2, movesList.length);
-		trace('two_movesList: $two_movesList');
-
-		final four_movesList = movesList.substring(movesList.length - 4, movesList.length);
-		trace('four_movesList: $four_movesList');
-
-		final six_movesList = movesList.substring(movesList.length - 6, movesList.length);
-		trace('six_movesList: $six_movesList');
-
-		final eight_movesList = movesList.substring(movesList.length - 8, movesList.length);
-		trace('eight_movesList: $eight_movesList');
-
-		final patternStrings = MovePatternGenerator.generateFilteredPatterns([4]);
-
-		var usingPattern:Bool = false;
-
-		for (pattern in patternStrings)
-		{
-			trace('Checking for pattern "$pattern"');
-
-			switch (pattern.length)
-			{
-				case 2:
-					usingPattern = two_movesList == pattern;
-				case 4:
-					usingPattern = four_movesList == pattern;
-				case 6:
-					usingPattern = six_movesList == pattern;
-				case 8:
-					usingPattern = eight_movesList == pattern;
-				default:
-					trace('Unimplemented size: ${pattern.length}');
-			}
-			if (usingPattern)
-			{
-				if (setONM)
-				{
-					if (pattern.endsWith(ATK_MOVE))
-						OPPONENT_NEXT_MOVE = ATK_MOVE;
-					if (pattern.endsWith(DEF_MOVE))
-						OPPONENT_NEXT_MOVE = DEF_MOVE;
-				}
-
-				if (FlxG.random.bool(FlxG.random.float(0, 4) * 25)) // player may deviate
-				{
-					trace('Decided usage pattern: "$pattern"');
-
-					break;
-				}
-			}
-		}
-		trace('----movepat-end----');
-		return usingPattern;
-	}
-
+	// Removed: now handled by BattleManager
 	// Helper function for rounding to 1 decimal place
 	inline function round1(x:Float):Float
 		return Math.fround(x * 10) / 10;
