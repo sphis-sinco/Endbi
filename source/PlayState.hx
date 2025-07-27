@@ -163,10 +163,10 @@ class PlayState extends FlxState
 
 		final usingPattern:Bool = checkMovePatterns();
 
-		if (usingPattern)
-			def_reason = 'player has been predicted';
-		else if (FlxG.random.float(0, 4) >= 3.5)
+		if (FlxG.random.float(0, 4) >= 3.5)
 			def_reason = 'random chance';
+		else if (usingPattern && FlxG.random.float(0, 2) >= 1.5)
+			def_reason = 'player has been predicted';
 
 		defence = def_reason != '';
 		if (defence)
@@ -228,7 +228,7 @@ class PlayState extends FlxState
 		else
 			trace('Did nothing');
 
-		if (FlxG.random.bool(FlxG.random.int(0, 100)) || checkMovePatterns())
+		if (FlxG.random.bool(FlxG.random.int(0, 100)))
 		{
 			opMove();
 		}
@@ -270,7 +270,7 @@ class PlayState extends FlxState
 		final eight_movesList = movesList.substring(movesList.length - 8, movesList.length);
 		trace('eight_movesList: $eight_movesList');
 
-		final patternStrings = MovePatternGenerator.generateFilteredPatterns();
+		final patternStrings = MovePatternGenerator.generateFilteredPatterns([4]);
 
 		var usingPattern:Bool = false;
 
@@ -293,8 +293,6 @@ class PlayState extends FlxState
 			}
 			if (usingPattern)
 			{
-				trace('Using pattern: "$pattern"');
-
 				if (setONM)
 				{
 					if (pattern.endsWith(PLAYER_ATK_MOVE))
@@ -304,12 +302,14 @@ class PlayState extends FlxState
 				}
 
 				if (FlxG.random.bool(FlxG.random.float(0, 4) * 25)) // player may deviate
+				{
+					trace('Decided usage pattern: "$pattern"');
+
 					break;
+				}
 			}
 		}
-
 		trace('----movepat-end----');
-
 		return usingPattern;
 	}
 
