@@ -5,6 +5,7 @@ import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
+import play.character.CharacterData;
 import play.character.CharacterDataManager;
 import play.character.CharacterSprite;
 import play.op_ai.MovePatternGenerator;
@@ -227,11 +228,11 @@ class PlayState extends FlxState
 
 		if (FlxG.random.bool(FlxG.random.int(0, 100)))
 		{
-			opMove();
+			opMove(true);
 		}
 	}
 
-	public function opMove()
+	public function opMove(playerDefend:Bool = false)
 	{
 		trace('------op-move------');
 		var attack = false;
@@ -245,9 +246,77 @@ class PlayState extends FlxState
 		attack = OPPONENT_NEXT_MOVE == DEF_MOVE ? false : attack;
 
 		trace('Opponent attacking: $attack');
+
+		if (attack)
+		{
+			// Gather all attacks
+			var attacks = [OPPONENT.data.attack1, OPPONENT.data.attack2, OPPONENT.data.attack3];
+
+			// Score each attack based on situation
+			function scoreAttack(attack:CharacterAttackInformation):Int
+			{
+				var score = attack.baseDamage;
+
+				if (attack.baseDamage > PLAYER.HP)
+					score += 10; // Can KO player
+				if (OPPONENT.ENERGY > PLAYER.ENERGY && attack.baseDamage < PLAYER.HP)
+					score += 5; // Flex
+				if (PLAYER.HP > OPPONENT.HP && PLAYER.LEVEL > OPPONENT.LEVEL && PLAYER.ENERGY > OPPONENT.ENERGY)
+					score += 3; // Fear
+				if (OPPONENT.HP < PLAYER.HP && attack.baseDamage < PLAYER.HP)
+					score += 2; // Overconfident
+
+				return score;
+			}
+
+			// Pick the attack with the highest score
+			var bestAttack = attacks[0];
+			var bestScore = scoreAttack(bestAttack);
+			for (a in attacks)
+			{
+				var s = scoreAttack(a);
+				trace('attack "${a.name}", score: $s');
+
+				if (s > bestScore)
+				{
+					bestAttack = a;
+					bestScore = s;
+				}
+			}
+			var val = bestAttack.baseDamage;
+
+			final energyDiv = (OPPONENT.ENERGY / OPPONENT.MAX_ENERGY);
+			final prevPH = PLAYER.HP;
+			PLAYER.HP -= Std.int(val / ((playerDefend) ? (2 * energyDiv) : (1 * energyDiv)));
+			{
+				if (prevPH != PLAYER.HP)
+				{
+					// sfx goes here
+					FlxFlicker.stopFlickering(PLAYER);
+					FlxFlicker.flicker(PLAYER, 1, 0.05, true, true, flicker ->
+					{
+						if (PLAYER.HP <= 0)
+							deadPlayer();
+					});
+				}
+			}
+			OPPONENT.ENERGY -= 1;
+
+			if (PLAYER.HP < 0)
+			{
+				deadPlayer();
+			}
+			if (OPPONENT.ENERGY < 0)
+			{
+				OPPONENT.ENERGY = 0;
+			}
+		}
+
 		OPPONENT_NEXT_MOVE = '';
 		trace('----op-move-end----');
 	}
+
+	public function deadPlayer() {}
 
 	public function checkMovePatterns(?setONM = true):Bool
 	{
