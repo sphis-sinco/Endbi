@@ -92,8 +92,8 @@ class PlayState extends FlxState
 		final charWidthOffset = 6;
 		final charHeightOffset = 6;
 
-		PLAYER.setPosition(PLAYER.width * charWidthOffset, PLAYER.height * charHeightOffset);
-		OPPONENT.setPosition(FlxG.width - OPPONENT.width * charWidthOffset, OPPONENT.height * charHeightOffset);
+		PLAYER.setPosition(PLAYER.width * charWidthOffset, TEMPCHAR.height * charHeightOffset);
+		OPPONENT.setPosition(FlxG.width - OPPONENT.width * charWidthOffset, TEMPCHAR.height * charHeightOffset);
 
 		OPPONENT.flipX = true;
 
