@@ -316,7 +316,12 @@ class PlayState extends FlxState
 		trace('----op-move-end----');
 	}
 
-	public function deadPlayer() {}
+	public function deadPlayer()
+	{
+		PLAYER.HP = 0;
+		// TODO: Show death screen, maybe a substate for it?
+		FlxG.switchState(() -> new PlayState(OPPONENT_CHARACTER_NAME, PLAYER_CHARACTER_NAME));
+	}
 
 	public function checkMovePatterns(?setONM = true):Bool
 	{
