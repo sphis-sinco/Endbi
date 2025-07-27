@@ -24,6 +24,6 @@ class Main extends Sprite
 			trace('Non-haxer detected, posting nudes on twitter.com...');
 		#end
 
-		addChild(new FlxGame(0, 0, PlayState));
+		addChild(new FlxGame(0, 0, play.PlayState));
 	}
 }
