@@ -245,8 +245,10 @@ class PlayState extends FlxState
 		attack = PLAYER_HEALTH == 1 ? true : attack;
 		attack = OPPONENT_NEXT_MOVE == PLAYER_ATK_MOVE ? true : attack;
 		attack = OPPONENT_ENERGY == 0 ? false : attack;
+		attack = OPPONENT_NEXT_MOVE == PLAYER_DEF_MOVE ? false : attack;
 
 		trace('Opponent attacking: $attack');
+		OPPONENT_NEXT_MOVE = '';
 		trace('----op-move-end----');
 	}
 
