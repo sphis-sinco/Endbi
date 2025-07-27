@@ -415,11 +415,11 @@ class PlayState extends FlxState
 
 		for (attackbtn in ATTACK_BUTTONS.members)
 		{
-			attackbtn.visible = ATTACK_SELECT && !(PLAYER.HP < 1);
+			attackbtn.visible = ATTACK_SELECT && !(PLAYER.HP < 1) && !(OPPONENT.HP < 1);
 		}
 
-		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT && PLAYER.ENERGY > 0 && !(PLAYER.HP < 1);
-		DEFENCE_BUTTON.visible = !ATTACK_SELECT && !(PLAYER.HP < 1);
+		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT && PLAYER.ENERGY > 0 && !(PLAYER.HP < 1) && !(OPPONENT.HP < 1);
+		DEFENCE_BUTTON.visible = !ATTACK_SELECT && !(PLAYER.HP < 1) && !(OPPONENT.HP < 1);
 
 		PLAYER_TEXT.text = 'HP: ${PLAYER.HP}/${PLAYER.MAX_HP}' + '\nENERGY: ${PLAYER.ENERGY}/${PLAYER.MAX_ENERGY}' + '\nLEVEL: ${PLAYER.LEVEL}';
 		OPPONENT_TEXT.text = 'HP: ${OPPONENT.HP}/${OPPONENT.MAX_HP}' + '\nENERGY: ${OPPONENT.ENERGY}/${OPPONENT.MAX_ENERGY}' + '\nLEVEL: ${OPPONENT.LEVEL}';
