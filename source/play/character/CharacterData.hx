@@ -2,7 +2,7 @@ package play.character;
 
 typedef CharacterData =
 {
-	var assetFolder:String;
+	var ?assetFolder:String;
 	var ?assetNames:
 		{
 			var ?idle:String;
