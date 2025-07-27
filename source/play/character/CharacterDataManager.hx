@@ -11,7 +11,7 @@ class CharacterDataManager
 
 	public static function getCharacterJsonFile(character:String):CharacterData
 	{
-		return {
+		var data:CharacterData = {
 			assetFolder: null,
 			assetNames: {
 				idle: null,
@@ -29,6 +29,13 @@ class CharacterDataManager
 			max_energy: null,
 			level: null
 		};
+
+		if (character == 'jujer')
+		{
+			data.assetFolder = 'jujer';
+		}
+
+		return data;
 	}
 
 	public static function getCharacterJson(character:String):CharacterData

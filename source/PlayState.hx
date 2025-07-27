@@ -41,7 +41,7 @@ class PlayState extends FlxState
 	public var PLAYER_CHARACTER_NAME:String;
 	public var OPPONENT_CHARACTER_NAME:String;
 
-	override public function new(player:String, op:String)
+	override public function new(player:String, op:String = 'jujer')
 	{
 		super();
 
