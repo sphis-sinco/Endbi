@@ -9,6 +9,8 @@ import play.character.CharacterSprite;
 
 class PlayState extends FlxState
 {
+	public static var instance:PlayState = null;
+
 	public var TEMPCHAR:CharacterSprite;
 
 	public var ATTACK_SELECT:Bool = false;
@@ -51,19 +53,34 @@ class PlayState extends FlxState
 	{
 		super();
 
-		PLAYER_CHARACTER_NAME = player;
-		OPPONENT_CHARACTER_NAME = op;
-
 		var backdrop:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height);
 		add(backdrop);
 
+		if (instance != null)
+		{
+			this.PLAYER = instance.PLAYER;
+			this.OPPONENT = instance.OPPONENT;
+
+			this.PLAYER_TEXT = instance.PLAYER_TEXT;
+			this.OPPONENT_TEXT = instance.OPPONENT_TEXT;
+
+			this.PLAYER_ENERGY = instance.PLAYER_ENERGY;
+			this.PLAYER_HEALTH = instance.PLAYER_HEALTH;
+			this.PLAYER_MAXENERGY = instance.PLAYER_MAXENERGY;
+			this.PLAYER_MAXHEALTH = instance.PLAYER_MAXHEALTH;
+
+			instance = null;
+		}
+
 		TEMPCHAR = new CharacterSprite(CharacterDataManager.getCharacterJson('TEMPCHAR'));
 
-		PLAYER = new CharacterSprite(CharacterDataManager.getCharacterJson(player));
-		OPPONENT = new CharacterSprite(CharacterDataManager.getCharacterJson(op));
+		if (PLAYER == null || player != PLAYER_CHARACTER_NAME)
+			PLAYER = new CharacterSprite(CharacterDataManager.getCharacterJson(player));
+		if (OPPONENT == null || op != OPPONENT_CHARACTER_NAME)
+			OPPONENT = new CharacterSprite(CharacterDataManager.getCharacterJson(op));
 
-		PLAYER_TEXT = new FlxText();
-		OPPONENT_TEXT = new FlxText();
+		PLAYER_TEXT ??= new FlxText();
+		OPPONENT_TEXT ??= new FlxText();
 
 		ATTACK_BUTTONS = new FlxTypedGroup<FlxButton>();
 
@@ -71,6 +88,9 @@ class PlayState extends FlxState
 		{
 			ATTACK_SELECT = true;
 		});
+
+		PLAYER_CHARACTER_NAME = player;
+		OPPONENT_CHARACTER_NAME = op;
 	}
 
 	override public function create()
@@ -121,6 +141,8 @@ class PlayState extends FlxState
 		}
 
 		add(ATTACK_SELECT_BUTTON);
+
+		instance = this;
 	}
 
 	public function attackOp(val:Int)
