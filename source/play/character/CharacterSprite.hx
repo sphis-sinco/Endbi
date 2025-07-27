@@ -6,11 +6,11 @@ class CharacterSprite extends FlxSprite
 {
 	public var graphics:Map<String, String> = [];
 	public var data:CharacterData = null;
-	public var HP:Int = 0;
-	public var MAX_HP:Int = 0;
-	public var ENERGY:Int = 0;
-	public var MAX_ENERGY:Int = 0;
-	public var LEVEL:Int = 0;
+	public var HP:Float = 0;
+	public var MAX_HP:Float = 0;
+	public var ENERGY:Float = 0;
+	public var MAX_ENERGY:Float = 0;
+	public var LEVEL:Float = 0;
 
 	var currentAnim:String = 'idle';
 	var animTimer:Float = 0;

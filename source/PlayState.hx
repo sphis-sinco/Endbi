@@ -163,7 +163,7 @@ class PlayState extends FlxState
 
 		final energyDiv = (PLAYER.ENERGY / PLAYER.MAX_ENERGY);
 		final prevOH = OPPONENT.HP;
-		OPPONENT.HP -= Std.int(attack.baseDamage * energyDiv / ((defence) ? 2 : 1));
+		OPPONENT.HP -= (attack.baseDamage * energyDiv / ((defence) ? 2 : 1));
 		{
 			if (prevOH != OPPONENT.HP)
 			{
@@ -206,7 +206,7 @@ class PlayState extends FlxState
 
 	public function deadEnemy()
 	{
-		final energyIncrease = 5 * Std.int(PLAYER.ENERGY / PLAYER.MAX_ENERGY);
+		final energyIncrease = 5 * (PLAYER.ENERGY / PLAYER.MAX_ENERGY);
 
 		PLAYER.LEVEL++;
 		PLAYER.HP += energyIncrease;
@@ -301,7 +301,7 @@ class PlayState extends FlxState
 			final energyDiv = (OPPONENT.ENERGY / OPPONENT.MAX_ENERGY);
 			final prevPH = PLAYER.HP;
 			PLAYER.playAnimation('defence', 0.25);
-			PLAYER.HP -= Std.int(val / ((playerDefend) ? (2 * energyDiv) : (1 * energyDiv)));
+			PLAYER.HP -= (val / ((playerDefend) ? (2 * energyDiv) : (1 * energyDiv)));
 			{
 				if (prevPH != PLAYER.HP)
 				{
