@@ -206,6 +206,7 @@ class PlayState extends FlxState
 
 	public function deadEnemy()
 	{
+		trace('OPPONENT DEATH');
 		final energyIncrease = 5 * (PLAYER.ENERGY / PLAYER.MAX_ENERGY);
 
 		PLAYER.LEVEL++;
@@ -342,6 +343,7 @@ class PlayState extends FlxState
 
 	public function deadPlayer()
 	{
+		trace('PLAYER DEATH');
 		PLAYER.HP = 0;
 		instance = null;
 		// TODO: Show death screen, maybe a substate for it?
