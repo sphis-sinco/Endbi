@@ -33,6 +33,13 @@ class CharacterDataManager
 		if (character == 'jujer')
 		{
 			data.assetFolder = 'jujer';
+
+			// temporary asset names for jujer
+			data.assetNames.defence = 'idle';
+			data.assetNames.death = 'idle';
+			data.assetNames.atk1 = 'idle';
+			data.assetNames.atk2 = 'idle';
+			data.assetNames.atk3 = 'idle';
 		}
 		else if (character == 'tempChar')
 		{
