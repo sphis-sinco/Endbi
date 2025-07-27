@@ -1,13 +1,19 @@
 package;
 
 import flixel.FlxState;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
+import flixel.ui.FlxButton;
 import play.character.CharacterDataManager;
 import play.character.CharacterSprite;
 
 class PlayState extends FlxState
 {
 	public var TEMPCHAR:CharacterSprite;
+
+	public var ATTACK_SELECT:Bool = true;
+
+	public var ATTACK_BUTTONS:FlxTypedGroup<FlxButton>;
 
 	public var PLAYER:CharacterSprite;
 
@@ -47,6 +53,8 @@ class PlayState extends FlxState
 
 		PLAYER_TEXT = new FlxText();
 		OPPONENT_TEXT = new FlxText();
+
+		ATTACK_BUTTONS = new FlxTypedGroup<FlxButton>();
 	}
 
 	override public function create()
@@ -75,14 +83,42 @@ class PlayState extends FlxState
 
 		add(PLAYER_TEXT);
 		add(OPPONENT_TEXT);
+
+		add(ATTACK_BUTTONS);
+
+		ATTACK_BUTTONS.add(new FlxButton(0, 0, PLAYER.data.attack1.name, () ->
+		{
+			ATTACK_SELECT = false;
+			OPPONENT_HEALTH -= Std.int(PLAYER.data.attack1.baseDamage * (PLAYER_ENERGY / PLAYER_MAXENERGY));
+		}));
+		ATTACK_BUTTONS.add(new FlxButton(0, 32, PLAYER.data.attack2.name, () ->
+		{
+			ATTACK_SELECT = false;
+			OPPONENT_HEALTH -= Std.int(PLAYER.data.attack2.baseDamage * (PLAYER_ENERGY / PLAYER_MAXENERGY));
+		}));
+		ATTACK_BUTTONS.add(new FlxButton(0, 64, PLAYER.data.attack3.name, () ->
+		{
+			ATTACK_SELECT = false;
+			OPPONENT_HEALTH -= Std.int(PLAYER.data.attack3.baseDamage * (PLAYER_ENERGY / PLAYER_MAXENERGY));
+		}));
+
+		for (attackbtn in ATTACK_BUTTONS.members)
+		{
+			attackbtn.y += (FlxG.height - ATTACK_BUTTONS.members.length * 48);
+		}
 	}
 
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-		PLAYER_TEXT.text = 'HP: ${PLAYER_HEALTH}/${PLAYER_MAXHEALTH}' + '\nENERGY: ${PLAYER_ENERGY}/${PLAYER_MAXHEALTH}' + '\nLEVEL: ${PLAYER_LEVEL}';
-		OPPONENT_TEXT.text = 'HP: ${OPPONENT_HEALTH}/${OPPONENT_MAXHEALTH}' + '\nENERGY: ${OPPONENT_ENERGY}/${OPPONENT_MAXHEALTH}'
+		for (attackbtn in ATTACK_BUTTONS.members)
+		{
+			attackbtn.visible = ATTACK_SELECT;
+		}
+
+		PLAYER_TEXT.text = 'HP: ${PLAYER_HEALTH}/${PLAYER_MAXHEALTH}' + '\nENERGY: ${PLAYER_ENERGY}/${PLAYER_MAXENERGY}' + '\nLEVEL: ${PLAYER_LEVEL}';
+		OPPONENT_TEXT.text = 'HP: ${OPPONENT_HEALTH}/${OPPONENT_MAXHEALTH}' + '\nENERGY: ${OPPONENT_ENERGY}/${OPPONENT_MAXENERGY}'
 			+ '\nLEVEL: ${OPPONENT_LEVEL}';
 	}
 }
