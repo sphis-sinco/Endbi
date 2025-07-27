@@ -138,8 +138,14 @@ class PlayState extends FlxState
 		OPPONENT_HEALTH -= Std.int(val / ((defence) ? (2 * energyDiv) : (1 * energyDiv)));
 		PLAYER_ENERGY -= 1;
 
-		if (OPPONENT_HEALTH < 0) {}
-		if (PLAYER_ENERGY < 0) {}
+		if (OPPONENT_HEALTH < 0)
+		{
+			// swap op
+		}
+		if (PLAYER_ENERGY < 0)
+		{
+			PLAYER_ENERGY = 0;
+		}
 
 		PLAYER_LAST_MOVES += PLAYER_ATK_MOVE;
 	}
