@@ -343,8 +343,9 @@ class PlayState extends FlxState
 	public function deadPlayer()
 	{
 		PLAYER.HP = 0;
+		instance = null;
 		// TODO: Show death screen, maybe a substate for it?
-		FlxG.switchState(() -> new PlayState(OPPONENT_CHARACTER_NAME, PLAYER_CHARACTER_NAME));
+		FlxG.switchState(() -> new PlayState(PLAYER_CHARACTER_NAME, OPPONENT_CHARACTER_NAME));
 	}
 
 	public function checkMovePatterns(?setONM = true):Bool
@@ -414,11 +415,11 @@ class PlayState extends FlxState
 
 		for (attackbtn in ATTACK_BUTTONS.members)
 		{
-			attackbtn.visible = ATTACK_SELECT;
+			attackbtn.visible = ATTACK_SELECT && (!PLAYER.HP < 1);
 		}
 
-		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT && PLAYER.ENERGY > 0;
-		DEFENCE_BUTTON.visible = !ATTACK_SELECT;
+		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT && PLAYER.ENERGY > 0 && (!PLAYER.HP < 1);
+		DEFENCE_BUTTON.visible = !ATTACK_SELECT && (!PLAYER.HP < 1);
 
 		PLAYER_TEXT.text = 'HP: ${PLAYER.HP}/${PLAYER.MAX_HP}' + '\nENERGY: ${PLAYER.ENERGY}/${PLAYER.MAX_ENERGY}' + '\nLEVEL: ${PLAYER.LEVEL}';
 		OPPONENT_TEXT.text = 'HP: ${OPPONENT.HP}/${OPPONENT.MAX_HP}' + '\nENERGY: ${OPPONENT.ENERGY}/${OPPONENT.MAX_ENERGY}' + '\nLEVEL: ${OPPONENT.LEVEL}';
