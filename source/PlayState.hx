@@ -409,19 +409,25 @@ class PlayState extends FlxState
 		return usingPattern;
 	}
 
+	// Helper function for rounding to 1 decimal place
+	inline function round1(x:Float):Float
+		return Math.fround(x * 10) / 10;
+
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
 		for (attackbtn in ATTACK_BUTTONS.members)
 		{
-			attackbtn.visible = ATTACK_SELECT && !(PLAYER.HP < 1) && !(OPPONENT.HP < 1);
+			attackbtn.visible = ATTACK_SELECT && !(round1(PLAYER.HP) < 1) && !(round1(OPPONENT.HP) < 1);
 		}
 
-		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT && PLAYER.ENERGY > 0 && !(PLAYER.HP < 1) && !(OPPONENT.HP < 1);
-		DEFENCE_BUTTON.visible = !ATTACK_SELECT && !(PLAYER.HP < 1) && !(OPPONENT.HP < 1);
+		ATTACK_SELECT_BUTTON.visible = !ATTACK_SELECT && round1(PLAYER.ENERGY) > 0 && !(round1(PLAYER.HP) < 1) && !(round1(OPPONENT.HP) < 1);
+		DEFENCE_BUTTON.visible = !ATTACK_SELECT && !(round1(PLAYER.HP) < 1) && !(round1(OPPONENT.HP) < 1);
 
-		PLAYER_TEXT.text = 'HP: ${PLAYER.HP}/${PLAYER.MAX_HP}' + '\nENERGY: ${PLAYER.ENERGY}/${PLAYER.MAX_ENERGY}' + '\nLEVEL: ${PLAYER.LEVEL}';
-		OPPONENT_TEXT.text = 'HP: ${OPPONENT.HP}/${OPPONENT.MAX_HP}' + '\nENERGY: ${OPPONENT.ENERGY}/${OPPONENT.MAX_ENERGY}' + '\nLEVEL: ${OPPONENT.LEVEL}';
+		PLAYER_TEXT.text = 'HP: ' + round1(PLAYER.HP) + '/' + round1(PLAYER.MAX_HP) + '\nENERGY: ' + round1(PLAYER.ENERGY) + '/' + round1(PLAYER.MAX_ENERGY)
+			+ '\nLEVEL: ' + PLAYER.LEVEL;
+		OPPONENT_TEXT.text = 'HP: ' + round1(OPPONENT.HP) + '/' + round1(OPPONENT.MAX_HP) + '\nENERGY: ' + round1(OPPONENT.ENERGY) + '/'
+			+ round1(OPPONENT.MAX_ENERGY) + '\nLEVEL: ' + OPPONENT.LEVEL;
 	}
 }
