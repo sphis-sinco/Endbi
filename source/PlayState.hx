@@ -163,7 +163,7 @@ class PlayState extends FlxState
 
 		if (usingPattern)
 			def_reason = 'player has been predicted';
-		else if (FlxG.random.int(0, 4) >= 3)
+		else if (FlxG.random.float(0, 4) >= 3.5)
 			def_reason = 'random chance';
 
 		defence = def_reason != '';
@@ -238,7 +238,10 @@ class PlayState extends FlxState
 		var attack = false;
 
 		attack = FlxG.random.bool(FlxG.random.int(0, 100)) ? true : attack;
+		attack = OPPONENT_LEVEL > PLAYER_LEVEL ? true : attack;
+		attack = OPPONENT_ENERGY > PLAYER_ENERGY ? true : attack;
 		attack = PLAYER_HEALTH == 1 ? true : attack;
+		attack = OPPONENT_ENERGY == 0 ? false : attack;
 
 		trace('Opponent attacking: $attack');
 		trace('----op-move-end----');
@@ -286,9 +289,11 @@ class PlayState extends FlxState
 			if (usingPattern)
 			{
 				trace('Using pattern: "$pattern"');
-				break;
+				if (FlxG.random.bool(75)) // player may deviate
+					break;
 			}
 		}
+
 		trace('----movepat-end----');
 
 		return usingPattern;
